@@ -16,10 +16,12 @@ public:
 private:
     glm::vec2 top_left_corner_;
     size_t num_tiles_per_side_;
-    size_t board_size_;
+    double tile_side_length_;
+    //size_t board_size_;
 
     vector<vector<size_t>> tiles_;
 
+    void DrawPixelBox(const size_t row, const size_t col);
 };
 
 }
