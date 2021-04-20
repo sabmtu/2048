@@ -1,0 +1,4 @@
+#ifndef INC_2048_GAME_BOARD_H
+#define INC_2048_GAME_BOARD_H
+
+#endif //INC_2048_GAME_BOARD_H
