@@ -15,7 +15,7 @@ public:
     void keyDown(ci::app::KeyEvent event) override;
 
     const double kWindowSize = 675;
-    const double kMargin = 100;
+    const double kMargin = 150;
     const size_t kBoardDimension = 4;
 
 private:
