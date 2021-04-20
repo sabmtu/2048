@@ -1,4 +1,26 @@
-#ifndef INC_2048_GAME_BOARD_H
-#define INC_2048_GAME_BOARD_H
+#pragma once
 
-#endif //INC_2048_GAME_BOARD_H
+#include <vector>
+#include "cinder/gl/gl.h"
+
+namespace game_2048 {
+using std::vector;
+
+class Board {
+public:
+    Board();
+    Board(const glm::vec2& top_left_corner, size_t num_tiles_per_side,
+           double board_size);
+    void Draw();
+
+private:
+    glm::vec2 top_left_corner_;
+    size_t num_tiles_per_side_;
+    size_t board_size_;
+
+    vector<vector<size_t>> tiles_;
+
+};
+
+}
+

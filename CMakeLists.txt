@@ -52,7 +52,8 @@ include("${CINDER_PATH}/proj/cmake/modules/cinderMakeApp.cmake")
 list(APPEND CORE_SOURCE_FILES src/core/game_engine.cc)
 
 list(APPEND SOURCE_FILES    ${CORE_SOURCE_FILES}
-        src/visualizer/board.cc)
+        src/visualizer/board.cc
+        src/visualizer/game_2048_app.cc)
 
 list(APPEND TEST_FILES tests/test_main.cc)
 
