@@ -14,16 +14,23 @@ public:
            double board_size);
     void Draw();
 
+    const glm::vec2& GetTopLeftCorner();
+    const double GetTileSideLength();
+    const double GetBoardSize();
+    const vector<vector<Tile>>& GetTiles();
+    const size_t GetNumTilesPerSide();
+    const double kTileMargin = 10;
+
 private:
     glm::vec2 top_left_corner_;
     size_t num_tiles_per_side_;
     double tile_side_length_;
-    size_t board_size_;
+    double board_size_;
 
-    const double kTileMargin = 10;
+
     vector<vector<Tile>> tiles_;
 
-    void DrawTile(const Tile& tile);
+    //void DrawTile(const Tile& tile);
 };
 
 }

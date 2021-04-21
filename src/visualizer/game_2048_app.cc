@@ -4,7 +4,7 @@ namespace game_2048 {
 
 Game2048App::Game2048App()
     : board_(glm::vec2(kMargin, kMargin), kBoardDimension,
-             kWindowSize - 2 * kMargin){
+                 kWindowSize - 2 * kMargin) {
     ci::app::setWindowSize((int) kWindowSize, (int) kWindowSize);
 
 }
@@ -15,9 +15,24 @@ void Game2048App::draw() {
     board_.Draw();
 }
 
-void Game2048App::keyDown(ci::app::KeyEvent event) {
-    AppBase::keyDown(event);
-}
+/*void Game2048App::keyDown(ci::app::KeyEvent event) {
+    switch (event.getCode()) {
+        case ci::app::KeyEvent::KEY_LEFT:
+            game_engine_.MoveTiles(Direction::UP);
+            break;
+        case ci::app::KeyEvent::KEY_RIGHT:
+            game_engine_.MoveTiles(Direction::RIGHT);
+            break;
+        case ci::app::KeyEvent::KEY_UP:
+            game_engine_.MoveTiles(Direction::UP);
+            break;
+        case ci::app::KeyEvent::KEY_DOWN:
+            game_engine_.MoveTiles(Direction::DOWN);
+            break;
+    }
+
+}*/
+
 
 
 }

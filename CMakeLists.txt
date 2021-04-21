@@ -56,7 +56,8 @@ list(APPEND SOURCE_FILES    ${CORE_SOURCE_FILES}
         src/visualizer/board.cc
         src/visualizer/game_2048_app.cc)
 
-list(APPEND TEST_FILES tests/test_main.cc)
+list(APPEND TEST_FILES tests/test_main.cc
+        tests/test_board.cc)
 
 ci_make_app(
         APP_NAME        2048-game
