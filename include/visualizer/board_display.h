@@ -11,7 +11,11 @@ using std::vector;
 class BoardDisplay {
 public:
     BoardDisplay();
-    BoardDisplay(const Board& board);
+    //BoardDisplay(const Board& board);
+
+    /**
+     * Displays the board.
+     */
     void Draw();
 
 
@@ -19,6 +23,9 @@ public:
 private:
     Board board_;
 
+    /**
+     * Draws the number tiles in the game.
+     */
     void DrawTiles();
 };
 

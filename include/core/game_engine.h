@@ -1,6 +1,5 @@
 #pragma once
 
-//#include <vector>
 #include <core/tile.h>
 #include "cinder/gl/gl.h"
 #include <core/board.h>
@@ -9,6 +8,7 @@
 
 namespace game_2048 {
 
+//Illustrate directions tiles will move
 enum class Direction {
     UP, DOWN, LEFT, RIGHT
 };
@@ -18,15 +18,30 @@ public:
     GameEngine();
     GameEngine(const glm::vec2& top_left_corner, size_t num_tiles_per_side,
                double board_size);
+
+    /**
+     * Moves tiles in given direction.
+     * @param direction Direction representing which arrow key direction the tiles should move in
+     */
     void MoveTiles(const Direction& direction);
-    void UpdateGame();
+
+    //const Board& GetBoard();
 
 private:
     Board board_;
-    BoardDisplay board_display_;
 
+    /**
+     * Moves given tile in given direction until tile cannot move anymore.
+     * @param tile Tile representing number tile being moved.
+     * @param direction Direction representing direction tile should move.
+     */
     void MoveInDirection(Tile& tile, const Direction& direction);
 
+    /**
+     * Checks if given tile has hit wall or another number tile and should stop moving.
+     * @param tile Tile representing given tile moving
+     * @return bool representing if has collided or not
+     */
     bool HasCollidedWithWall(Tile& tile);
     bool HasCollidedWithTile(Tile& tile);
     //bool CheckTileMerge();

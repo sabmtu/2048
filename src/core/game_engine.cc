@@ -7,12 +7,12 @@ GameEngine::GameEngine() {
 }
 
 GameEngine::GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_side, double board_size)
-    : board_(top_left_corner, num_tiles_per_side, board_size), board_display_(board_) {
+    : board_(top_left_corner, num_tiles_per_side, board_size) {
 }
 
-void GameEngine::UpdateGame() {
-    board_display_.Draw();
-}
+/*const Board &GameEngine::GetBoard() {
+    return board_;
+}*/
 
 void GameEngine::MoveTiles(const Direction& direction) {
     vector<Tile> tiles = board_.GetTiles();
@@ -84,6 +84,8 @@ bool GameEngine::HasCollidedWithTile(Tile &tile) {
     }
     return false;
 }
+
+
 
 
 }

@@ -21,7 +21,7 @@ public:
     const size_t kBoardDimension = 4;
 
 private:
-    GameEngine game_engine_;
+    //GameEngine game_engine_;
     //Board board_;
     //BoardDisplay board_display_;
 

@@ -8,8 +8,7 @@ namespace game_2048 {
 
 BoardDisplay::BoardDisplay() {}
 
-BoardDisplay::BoardDisplay(const Board& board) {
-    board_ = board;
+BoardDisplay::BoardDisplay(const Board& board) : board_(board) {
 }
 
 void BoardDisplay::Draw() {
