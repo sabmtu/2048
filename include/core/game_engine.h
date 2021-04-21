@@ -1,8 +1,11 @@
 #pragma once
 
-#include <visualizer/board.h>
-#include <visualizer/game_2048_app.h>
+//#include <vector>
 #include <core/tile.h>
+#include "cinder/gl/gl.h"
+#include <core/board.h>
+#include <visualizer/game_2048_app.h>
+
 
 namespace game_2048 {
 
@@ -13,20 +16,21 @@ enum class Direction {
 class GameEngine {
 public:
     GameEngine();
-
+    GameEngine(const glm::vec2& top_left_corner, size_t num_tiles_per_side,
+               double board_size);
     void MoveTiles(const Direction& direction);
-    //const vector<vector<Tile>>& GetTiles();
+    void UpdateGame();
 
 private:
-    vector<vector<Tile>> tiles_;
     Board board_;
+    BoardDisplay board_display_;
 
     void MoveInDirection(Tile& tile, const Direction& direction);
 
     bool HasCollidedWithWall(Tile& tile);
     bool HasCollidedWithTile(Tile& tile);
-    bool CheckTileMerge();
-    void MergeTiles();
+    //bool CheckTileMerge();
+    //void MergeTiles();
 };
 
 }

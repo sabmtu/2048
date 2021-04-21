@@ -6,7 +6,6 @@ Tile::Tile() { }
 
 Tile::Tile(glm::vec2 position, size_t num, ci::Color color) {
     position_ = position;
-    //velocity_ = velocity;
     number_ = num;
     color_ = color;
 }
@@ -35,7 +34,15 @@ void Tile::MoveDown() {
     position_.y += kMoveSpeed;
 }
 
-
+bool Tile::operator==(const Tile &tile) const {
+    if (position_.x != tile.position_.x || position_.y != tile.position_.y) {
+        return false;
+    }
+    if (number_ != tile.GetNumber() || color_ != tile.GetColor()) {
+        return false;
+    }
+    return true;
+}
 
 
 }

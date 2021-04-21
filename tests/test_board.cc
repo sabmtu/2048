@@ -1,5 +1,5 @@
 #include <catch2/catch.hpp>
-#include <visualizer/board.h>
+#include <visualizer/board_display.h>
 #include <core/tile.h>
 
 using game_2048::Board;
