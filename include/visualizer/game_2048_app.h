@@ -23,7 +23,7 @@ public:
 private:
     //GameEngine game_engine_;
     //Board board_;
-    //BoardDisplay board_display_;
+    BoardDisplay board_display_;
 
 };
 

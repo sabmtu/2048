@@ -1,9 +1,7 @@
 #pragma once
 
-#include <core/tile.h>
 #include "cinder/gl/gl.h"
-#include <core/board.h>
-#include <visualizer/game_2048_app.h>
+#include "board.h"
 
 
 namespace game_2048 {
@@ -16,8 +14,7 @@ enum class Direction {
 class GameEngine {
 public:
     GameEngine();
-    GameEngine(const glm::vec2& top_left_corner, size_t num_tiles_per_side,
-               double board_size);
+    GameEngine(Board& board);
 
     /**
      * Moves tiles in given direction.
@@ -25,7 +22,7 @@ public:
      */
     void MoveTiles(const Direction& direction);
 
-    //const Board& GetBoard();
+    const Board& GetBoard();
 
 private:
     Board board_;

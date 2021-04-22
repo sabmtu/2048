@@ -1,6 +1,6 @@
 #pragma once
 #include "cinder/gl/gl.h"
-#include "game_engine.h"
+#include "tile.h"
 
 namespace game_2048 {
     using std::vector;

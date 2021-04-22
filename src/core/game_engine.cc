@@ -6,13 +6,17 @@ GameEngine::GameEngine() {
 
 }
 
-GameEngine::GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_side, double board_size)
-    : board_(top_left_corner, num_tiles_per_side, board_size) {
+GameEngine::GameEngine(Board& board): board_(board) {
+
 }
 
-/*const Board &GameEngine::GetBoard() {
-    return board_;
+/*GameEngine::GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_side, double board_size)
+    : board_(top_left_corner, num_tiles_per_side, board_size) {
 }*/
+
+const Board &GameEngine::GetBoard() {
+    return board_;
+}
 
 void GameEngine::MoveTiles(const Direction& direction) {
     vector<Tile> tiles = board_.GetTiles();

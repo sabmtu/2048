@@ -10,7 +10,8 @@ using std::vector;
 
 class BoardDisplay {
 public:
-    BoardDisplay();
+    BoardDisplay(const glm::vec2& top_left_corner, size_t num_tiles_per_side,
+                 double board_size);
     //BoardDisplay(const Board& board);
 
     /**
@@ -18,10 +19,16 @@ public:
      */
     void Draw();
 
-
+    const double kTileMargin = 10;
 
 private:
-    Board board_;
+    //Board board_;
+
+    //Details and size of tiles and board
+    glm::vec2 top_left_corner_;
+    size_t num_tiles_per_side_;
+    double tile_side_length_;
+    double board_size_;
 
     /**
      * Draws the number tiles in the game.
