@@ -1,12 +1,11 @@
 #include <catch2/catch.hpp>
-#include <visualizer/board_display.h>
 #include <core/tile.h>
 
-using game_2048::Board;
+//using game_2048::Board;
 using game_2048::Tile;
 
 TEST_CASE("Initialize board correctly") {
-    Board board(glm::vec2(0,0), 4, 4);
+    //Board board(glm::vec2(0,0), 4, 4);
     Tile tile (glm::vec2(10, 10), 2, "white");
 
     SECTION("Move down") {
@@ -21,12 +20,12 @@ TEST_CASE("Initialize board correctly") {
 
     SECTION("Move up") {
         tile.MoveUp();
-        REQUIRE(tile.position_.y == 10);
+        REQUIRE(tile.position_.y == 8);
     }
 
     SECTION("Move left") {
         tile.MoveLeft();
-        REQUIRE(tile.position_.x == 10);
+        REQUIRE(tile.position_.x == 8);
     }
 
 }

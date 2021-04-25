@@ -2,7 +2,7 @@
 
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
-#include "cinder/gl/gl.h"
+//#include "cinder/gl/gl.h"
 #include "board_display.h"
 #include <core/game_engine.h>
 
@@ -14,6 +14,7 @@ public:
     Game2048App();
 
     void draw() override;
+    void update() override;
     void keyDown(ci::app::KeyEvent event) override;
 
     const double kWindowSize = 675;
@@ -21,7 +22,7 @@ public:
     const size_t kBoardDimension = 4;
 
 private:
-    //GameEngine game_engine_;
+    GameEngine game_engine_;
     //Board board_;
     BoardDisplay board_display_;
 

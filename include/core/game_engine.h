@@ -1,20 +1,25 @@
 #pragma once
 
 #include "cinder/gl/gl.h"
-#include "board.h"
-
+//#include "board.h"
+#include "tile.h"
 
 namespace game_2048 {
 
+using std::vector;
+
 //Illustrate directions tiles will move
 enum class Direction {
-    UP, DOWN, LEFT, RIGHT
+    STILL, UP, DOWN, LEFT, RIGHT
 };
 
 class GameEngine {
 public:
     GameEngine();
-    GameEngine(Board& board);
+
+    GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_side, double board_size);
+
+    //GameEngine(Board& board);
 
     /**
      * Moves tiles in given direction.
@@ -22,10 +27,21 @@ public:
      */
     void MoveTiles(const Direction& direction);
 
-    const Board& GetBoard();
+    const vector<Tile>& GetTiles();
+    //const Board& GetBoard();
 
 private:
-    Board board_;
+    //Board board_;
+    //Stores number tiles
+    vector<Tile> tiles_;
+
+    //Details and size of tiles and board
+    glm::vec2 top_left_corner_;
+    size_t num_tiles_per_side_;
+    double tile_side_length_;
+    double board_size_;
+
+    Direction current_direction_;
 
     /**
      * Moves given tile in given direction until tile cannot move anymore.

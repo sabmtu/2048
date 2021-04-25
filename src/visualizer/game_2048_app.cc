@@ -3,8 +3,10 @@
 namespace game_2048 {
 
 Game2048App::Game2048App()
-    : board_display_(glm::vec2(kMargin, kMargin), kBoardDimension,
-                      kWindowSize - 2 * kMargin) {
+    : game_engine_(glm::vec2(kMargin, kMargin), kBoardDimension,
+                   kWindowSize - 2 * kMargin),
+      board_display_(glm::vec2(kMargin, kMargin), kBoardDimension,
+            kWindowSize - 2 * kMargin) {
     ci::app::setWindowSize((int) kWindowSize, (int) kWindowSize);
 }
 
@@ -12,10 +14,11 @@ void Game2048App::draw() {
     ci::Color8u background_color(230, 230, 220);  // light yellow
     ci::gl::clear(background_color);
     board_display_.Draw();
+    board_display_.DrawNumberTiles(game_engine_.GetTiles());
 }
 
 void Game2048App::keyDown(ci::app::KeyEvent event) {
-    /*switch (event.getCode()) {
+    switch (event.getCode()) {
         case ci::app::KeyEvent::KEY_LEFT:
             game_engine_.MoveTiles(Direction::UP);
             break;
@@ -28,7 +31,11 @@ void Game2048App::keyDown(ci::app::KeyEvent event) {
         case ci::app::KeyEvent::KEY_DOWN:
             game_engine_.MoveTiles(Direction::DOWN);
             break;
-    }*/
+    }
+
+}
+
+void Game2048App::update() {
 
 }
 

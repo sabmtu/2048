@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <core/tile.h>
-#include <core/board.h>
 #include "cinder/gl/gl.h"
 
 namespace game_2048 {
@@ -19,7 +18,8 @@ public:
      */
     void Draw();
 
-    const double kTileMargin = 10;
+    void DrawNumberTiles(vector<Tile> tiles);
+    const double kTileMargin = 5;
 
 private:
     //Board board_;
