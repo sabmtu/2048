@@ -10,8 +10,11 @@ GameEngine::GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_si
     : top_left_corner_(top_left_corner), num_tiles_per_side_(num_tiles_per_side),
     tile_side_length_(board_size / num_tiles_per_side_),
     board_size_(board_size) {
+    current_direction_ = Direction::STILL;
     Tile tile(top_left_corner_, 2, "beige");
+    Tile tile_(top_left_corner_ + glm::vec2(tile_side_length_,0) , 2, "beige");
     tiles_.push_back(tile);
+    tiles_.push_back(tile_);
 }
 
 /*GameEngine::GameEngine(Board& board): board_(board) {
@@ -26,31 +29,44 @@ const vector<Tile> &GameEngine::GetTiles() {
     return tiles_;
 }
 
-void GameEngine::MoveTiles(const Direction& direction) {
+void GameEngine::SetCurrentDirection(const Direction& direction) {
     current_direction_ = direction;
+}
+
+void GameEngine::MoveTiles() {
+    if (current_direction_ == Direction::STILL) {
+        return;
+    }
+
     for (Tile& tile : tiles_) {
-        if (!HasCollidedWithWall(tile) && !HasCollidedWithTile(tile)) {
-            MoveInDirection(tile, current_direction_);
-        }
+        MoveInDirection(tile, current_direction_);
     }
 }
 
 void GameEngine::MoveInDirection(Tile& tile, const Direction &direction) {
     switch (direction) {
       case Direction::UP:
-          tile.MoveUp();
+          if (!HasCollidedWithTopWall(tile)) {
+              tile.MoveUp();
+          }
           break;
 
       case Direction::DOWN:
-          tile.MoveDown();
+          if (!HasCollidedWithBottomWall(tile)) {
+              tile.MoveDown();
+          }
           break;
 
       case Direction::LEFT:
-          tile.MoveLeft();
+          if (!HasCollidedWithLeftWall(tile)) {
+              tile.MoveLeft();
+          }
           break;
 
       case Direction::RIGHT:
-          tile.MoveRight();
+          if (!HasCollidedWithRightWall(tile)) {
+              tile.MoveRight();
+          }
           break;
 
       default:
@@ -58,18 +74,20 @@ void GameEngine::MoveInDirection(Tile& tile, const Direction &direction) {
     }
 }
 
-bool GameEngine::HasCollidedWithWall(Tile& tile) {
-    if (tile.position_.x <= top_left_corner_.x
-    || tile.position_.x + tile_side_length_ == top_left_corner_.x + board_size_) {
-        return true;
+bool GameEngine::HasCollidedWithRightWall(Tile& tile) {
+    return tile.position_.x + tile_side_length_ >= top_left_corner_.x + board_size_;
+}
 
-    } else if (tile.position_.y == top_left_corner_.y
-    || tile.position_.y + tile_side_length_ == top_left_corner_.y + board_size_) {
-        return true;
+bool GameEngine::HasCollidedWithLeftWall(Tile &tile) {
+    return tile.position_.x <= top_left_corner_.x;
+}
 
-    } else {
-        return false;
-    }
+bool GameEngine::HasCollidedWithTopWall(Tile &tile) {
+    return tile.position_.y <= top_left_corner_.y;
+}
+
+bool GameEngine::HasCollidedWithBottomWall(Tile &tile) {
+    return tile.position_.y + tile_side_length_ >= top_left_corner_.y + board_size_;
 }
 
 /*bool GameEngine::CheckTileMerge() {

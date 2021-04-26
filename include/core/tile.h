@@ -36,7 +36,7 @@ public:
     bool operator==(const Tile& tile) const;
 
 private:
-    double kMoveSpeed = 2;
+    double kMoveSpeed = 25;
     size_t number_;
     ci::Color color_;
 

@@ -16,22 +16,21 @@ enum class Direction {
 class GameEngine {
 public:
     GameEngine();
-
     GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_side, double board_size);
 
-    //GameEngine(Board& board);
+    void SetCurrentDirection(const Direction& direction);
 
     /**
      * Moves tiles in given direction.
-     * @param direction Direction representing which arrow key direction the tiles should move in
      */
-    void MoveTiles(const Direction& direction);
+    void MoveTiles();
 
     const vector<Tile>& GetTiles();
     //const Board& GetBoard();
 
 private:
     //Board board_;
+
     //Stores number tiles
     vector<Tile> tiles_;
 
@@ -50,12 +49,12 @@ private:
      */
     void MoveInDirection(Tile& tile, const Direction& direction);
 
-    /**
-     * Checks if given tile has hit wall or another number tile and should stop moving.
-     * @param tile Tile representing given tile moving
-     * @return bool representing if has collided or not
-     */
-    bool HasCollidedWithWall(Tile& tile);
+    void
+
+    bool HasCollidedWithLeftWall(Tile& tile);
+    bool HasCollidedWithRightWall(Tile& tile);
+    bool HasCollidedWithTopWall(Tile& tile);
+    bool HasCollidedWithBottomWall(Tile& tile);
     bool HasCollidedWithTile(Tile& tile);
     //bool CheckTileMerge();
     //void MergeTiles();

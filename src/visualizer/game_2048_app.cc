@@ -13,30 +13,31 @@ Game2048App::Game2048App()
 void Game2048App::draw() {
     ci::Color8u background_color(230, 230, 220);  // light yellow
     ci::gl::clear(background_color);
+
     board_display_.Draw();
     board_display_.DrawNumberTiles(game_engine_.GetTiles());
+}
+
+void Game2048App::update() {
+    game_engine_.MoveTiles();
 }
 
 void Game2048App::keyDown(ci::app::KeyEvent event) {
     switch (event.getCode()) {
         case ci::app::KeyEvent::KEY_LEFT:
-            game_engine_.MoveTiles(Direction::UP);
+            game_engine_.SetCurrentDirection(Direction::LEFT);
             break;
         case ci::app::KeyEvent::KEY_RIGHT:
-            game_engine_.MoveTiles(Direction::RIGHT);
+            game_engine_.SetCurrentDirection(Direction::RIGHT);
             break;
         case ci::app::KeyEvent::KEY_UP:
-            game_engine_.MoveTiles(Direction::UP);
+            game_engine_.SetCurrentDirection(Direction::UP);
             break;
         case ci::app::KeyEvent::KEY_DOWN:
-            game_engine_.MoveTiles(Direction::DOWN);
+            game_engine_.SetCurrentDirection(Direction::DOWN);
+            //game_engine_.MoveTiles(Direction::DOWN);
             break;
     }
-
-}
-
-void Game2048App::update() {
-
 }
 
 }

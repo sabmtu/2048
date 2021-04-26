@@ -2,7 +2,6 @@
 
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
-//#include "cinder/gl/gl.h"
 #include "board_display.h"
 #include <core/game_engine.h>
 
@@ -23,7 +22,6 @@ public:
 
 private:
     GameEngine game_engine_;
-    //Board board_;
     BoardDisplay board_display_;
 
 };

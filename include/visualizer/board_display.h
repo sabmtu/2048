@@ -11,18 +11,17 @@ class BoardDisplay {
 public:
     BoardDisplay(const glm::vec2& top_left_corner, size_t num_tiles_per_side,
                  double board_size);
-    //BoardDisplay(const Board& board);
 
     /**
      * Displays the board.
      */
     void Draw();
 
-    void DrawNumberTiles(vector<Tile> tiles);
-    const double kTileMargin = 5;
+    void DrawNumberTiles(const vector<Tile>& tiles);
+
 
 private:
-    //Board board_;
+    const double kTileMargin = 5;
 
     //Details and size of tiles and board
     glm::vec2 top_left_corner_;
