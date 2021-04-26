@@ -19,6 +19,7 @@ public:
     //position vector
     glm::vec2 position_;
 
+    //double GetMoveSpeed() const;
     const ci::Color& GetColor() const;
     size_t GetNumber() const;
 
@@ -34,9 +35,10 @@ public:
      * @return bool representing whether or not the Tile values are all equal
      */
     bool operator==(const Tile& tile) const;
+    double kMoveSpeed = 35;
 
 private:
-    double kMoveSpeed = 25;
+
     size_t number_;
     ci::Color color_;
 

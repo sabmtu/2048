@@ -25,11 +25,12 @@ public:
      */
     void MoveTiles();
 
-    const vector<Tile>& GetTiles();
+    //const vector<vector<Tile>>& GetTiles();
     //const Board& GetBoard();
 
 private:
     //Board board_;
+    //vector<vector<Tile>> tiles_;
 
     //Stores number tiles
     vector<Tile> tiles_;
@@ -49,12 +50,16 @@ private:
      */
     void MoveInDirection(Tile& tile, const Direction& direction);
 
-    void
+    void MoveUpUntilCollision(Tile& tile);
+    void MoveRightUntilCollision(Tile& tile);
+    void MoveLeftUntilCollision(Tile& tile);
+    void MoveDownUntilCollision(Tile& tile);
 
-    bool HasCollidedWithLeftWall(Tile& tile);
+    /*bool HasCollidedWithLeftWall(Tile& tile);
     bool HasCollidedWithRightWall(Tile& tile);
     bool HasCollidedWithTopWall(Tile& tile);
-    bool HasCollidedWithBottomWall(Tile& tile);
+    bool HasCollidedWithBottomWall(Tile& tile);*/
+    Tile& FindCollidedTile(Tile& tile);
     bool HasCollidedWithTile(Tile& tile);
     //bool CheckTileMerge();
     //void MergeTiles();

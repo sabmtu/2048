@@ -32,7 +32,7 @@ void BoardDisplay::DrawTiles() {
         for (size_t col = 0; col < num_tiles_per_side_; col++) {
             tile_bottom_right = tile_top_left + glm::vec2(tile_side_length_, tile_side_length_);
             ci::Rectf empty_tile(tile_top_left + glm::vec2(kTileMargin, kTileMargin), tile_bottom_right - glm::vec2(kTileMargin, kTileMargin));
-            ci::gl::color(ci::Color("white"));
+            ci::gl::color(ci::Color("beige"));
             ci::gl::drawSolidRect(empty_tile);
 
             tile_top_left += glm::vec2(tile_side_length_, 0);
