@@ -49,11 +49,11 @@ private:
      * @param direction Direction representing direction tile should move.
      */
     void MoveInDirection(Tile& tile, size_t row, size_t col);
-
-    void MoveUpUntilCollision(Tile& tile, size_t row, size_t col);
-    void MoveRightUntilCollision(Tile& tile, size_t row, size_t col);
-    void MoveLeftUntilCollision(Tile& tile, size_t row, size_t col);
-    void MoveDownUntilCollision(Tile& tile, size_t row, size_t col);
+    //void MoveAllTiles(size_t start_row, size_t start_col, int row_inc, int col_inc);
+    void MoveUpUntilCollision();
+    void MoveRightUntilCollision();
+    void MoveLeftUntilCollision();
+    void MoveDownUntilCollision();
 
     /*bool HasCollidedWithLeftWall(Tile& tile);
     bool HasCollidedWithRightWall(Tile& tile);
