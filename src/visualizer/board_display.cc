@@ -41,13 +41,16 @@ void BoardDisplay::DrawTiles() {
     }
 }
 
-void BoardDisplay::DrawNumberTiles(const vector<Tile>& tiles) {
-    for (const Tile& tile : tiles) {
-        glm::vec2 tile_bottom_right = tile.position_ + glm::vec2(tile_side_length_, tile_side_length_);
-        ci::Rectf num_tile(tile.position_ + glm::vec2(kTileMargin, kTileMargin), tile_bottom_right - glm::vec2(kTileMargin, kTileMargin));
-        ci::gl::color(tile.GetColor());
-        ci::gl::drawSolidRect(num_tile);
+void BoardDisplay::DrawNumberTiles(const vector<vector<Tile>>& tiles) {
+    for (const vector<Tile>& t : tiles) {
+        for (const Tile& tile : t) {
+            glm::vec2 tile_bottom_right = tile.position_ + glm::vec2(tile_side_length_, tile_side_length_);
+            ci::Rectf num_tile(tile.position_ + glm::vec2(kTileMargin, kTileMargin), tile_bottom_right - glm::vec2(kTileMargin, kTileMargin));
+            ci::gl::color(tile.GetColor());
+            ci::gl::drawSolidRect(num_tile);
+        }
     }
+
 }
 
 

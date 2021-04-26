@@ -29,6 +29,7 @@ public:
     void MoveUp();
     void MoveDown();
 
+    bool IsEmpty();
     /**
      * Overload equality operator to check if two Tile objects are equal.
      * @param image const Tile reference representing Tile to be compared

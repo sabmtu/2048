@@ -25,15 +25,15 @@ public:
      */
     void MoveTiles();
 
-    //const vector<vector<Tile>>& GetTiles();
+    const vector<vector<Tile>>& GetTiles();
     //const Board& GetBoard();
 
 private:
     //Board board_;
-    //vector<vector<Tile>> tiles_;
+    vector<vector<Tile>> tiles_;
 
     //Stores number tiles
-    vector<Tile> tiles_;
+    //vector<Tile> tiles_;
 
     //Details and size of tiles and board
     glm::vec2 top_left_corner_;
@@ -48,18 +48,18 @@ private:
      * @param tile Tile representing number tile being moved.
      * @param direction Direction representing direction tile should move.
      */
-    void MoveInDirection(Tile& tile, const Direction& direction);
+    void MoveInDirection(Tile& tile, size_t row, size_t col);
 
-    void MoveUpUntilCollision(Tile& tile);
-    void MoveRightUntilCollision(Tile& tile);
-    void MoveLeftUntilCollision(Tile& tile);
-    void MoveDownUntilCollision(Tile& tile);
+    void MoveUpUntilCollision(Tile& tile, size_t row, size_t col);
+    void MoveRightUntilCollision(Tile& tile, size_t row, size_t col);
+    void MoveLeftUntilCollision(Tile& tile, size_t row, size_t col);
+    void MoveDownUntilCollision(Tile& tile, size_t row, size_t col);
 
     /*bool HasCollidedWithLeftWall(Tile& tile);
     bool HasCollidedWithRightWall(Tile& tile);
     bool HasCollidedWithTopWall(Tile& tile);
     bool HasCollidedWithBottomWall(Tile& tile);*/
-    Tile& FindCollidedTile(Tile& tile);
+    //Tile& FindCollidedTile(Tile& tile);
     bool HasCollidedWithTile(Tile& tile);
     //bool CheckTileMerge();
     //void MergeTiles();

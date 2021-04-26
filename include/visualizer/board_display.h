@@ -17,7 +17,7 @@ public:
      */
     void Draw();
 
-    void DrawNumberTiles(const vector<Tile>& tiles);
+    void DrawNumberTiles(const vector<vector<Tile>>& tiles);
 
 
 private:

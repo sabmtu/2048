@@ -44,5 +44,9 @@ bool Tile::operator==(const Tile &tile) const {
     return true;
 }
 
+bool Tile::IsEmpty() {
+    return number_ == 0;
+}
+
 
 }
