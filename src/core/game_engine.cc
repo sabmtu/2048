@@ -12,12 +12,12 @@ GameEngine::GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_si
     board_size_(board_size) {
     current_direction_ = Direction::STILL;
 
+    board_size_ += 1;
     glm::vec2 top_left = top_left_corner_;
     for (size_t i = 0; i < num_tiles_per_side_; i++) {
         vector<Tile> test;
         for (size_t j = 0; j < num_tiles_per_side_; j++) {
-            Tile empty(0, "beige");
-            test.push_back(empty);
+            test.push_back(kEmptyTile);
             top_left.x += tile_side_length_;
         }
         tiles_.push_back(test);
@@ -27,6 +27,8 @@ GameEngine::GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_si
     Tile tile(2, "white");
     tiles_[2][0] = tile;
     tiles_[3][0] = tile;
+    tiles_[2][2] = tile;
+    tiles_[3][3] = tile;
 }
 
 const vector<vector<Tile>> &GameEngine::GetTiles() {
@@ -63,55 +65,102 @@ void GameEngine::MoveTiles() {
 }
 
 
-
 void GameEngine::MoveUpUntilCollision() {
-    Tile empty_tile(0, "beige");
     for (size_t row = 1; row < num_tiles_per_side_; row++) {
         for (size_t col = 0; col < num_tiles_per_side_; col++) {
             if (tiles_[row - 1][col].IsEmpty()) {
                 tiles_[row - 1][col] = tiles_[row][col];
 
-                tiles_[row][col] = empty_tile;
+                tiles_[row][col] = kEmptyTile;
+            }
+
+            if (CanMergeTileUp(row, col)) {
+                MergeTiles(row, col);
             }
         }
     }
 }
 
+bool GameEngine::CanMergeTileUp(size_t row, size_t col) {
+    return (!tiles_[row - 1][col].IsEmpty() && (tiles_[row - 1][col].GetNumber() == tiles_[row][col].GetNumber()));
+}
+
+
+
 void GameEngine::MoveRightUntilCollision() {
-    Tile empty_tile(0, "beige");
     for (size_t row = 0; row < num_tiles_per_side_; row++) {
         for (int col = num_tiles_per_side_ - 2; col >= 0; col--) {
             if (tiles_[row][col + 1].IsEmpty()) {
                 tiles_[row][col + 1] = tiles_[row][col];
 
-                tiles_[row][col] = empty_tile;
+                tiles_[row][col] = kEmptyTile;
+
+            } else if (CanMergeTileRight(row, col)) {
+                MergeTiles(row, col);
             }
         }
     }
 }
 
+bool GameEngine::CanMergeTileRight(size_t row, size_t col) {
+    return (!tiles_[row][col + 1].IsEmpty() && (tiles_[row][col + 1].GetNumber() == tiles_[row][col].GetNumber()));
+}
+
 void GameEngine::MoveLeftUntilCollision() {
-    Tile empty_tile(0, "beige");
     for (size_t row = 0; row < num_tiles_per_side_; row++) {
         for (size_t col = 1; col < num_tiles_per_side_; col++) {
             if (tiles_[row][col - 1].IsEmpty()) {
                 tiles_[row][col - 1] = tiles_[row][col];
-                tiles_[row][col] = empty_tile;
+                tiles_[row][col] = kEmptyTile;
+
+            } else if (CanMergeTileLeft(row, col)) {
+                MergeTiles(row, col);
             }
         }
     }
 }
 
+bool GameEngine::CanMergeTileLeft(size_t row, size_t col) {
+    return (!tiles_[row][col - 1].IsEmpty() && (tiles_[row][col - 1].GetNumber() == tiles_[row][col].GetNumber()));
+}
+
 void GameEngine::MoveDownUntilCollision() {
-    Tile empty_tile(0, "beige");
     for (int row = num_tiles_per_side_ - 2; row >= 0; row--) {
         for (size_t col = 0; col < num_tiles_per_side_; col++) {
             if (tiles_[row + 1][col].IsEmpty()) {
 
                 tiles_[row + 1][col] = tiles_[row][col];
-                tiles_[row][col] = empty_tile;
+                tiles_[row][col] = kEmptyTile;
+
+            } else if (CanMergeTileDown(row, col)) {
+                MergeTiles(row, col);
             }
         }
+    }
+}
+
+bool GameEngine::CanMergeTileDown(size_t row, size_t col) {
+    return (!tiles_[row + 1][col].IsEmpty() && (tiles_[row + 1][col].GetNumber() == tiles_[row][col].GetNumber()));
+}
+
+void GameEngine::MergeTiles(size_t row, size_t col) {
+    Tile combined_tile(2 * tiles_[row][col].GetNumber(), "yellow");
+
+    if (current_direction_ == Direction::UP) {
+        tiles_[row - 1][col] = combined_tile;
+        tiles_[row][col] = kEmptyTile;
+
+    } else if (current_direction_ == Direction::RIGHT) {
+        tiles_[row][col + 1] = combined_tile;
+        tiles_[row][col] = kEmptyTile;
+
+    } else if (current_direction_ == Direction::LEFT) {
+        tiles_[row][col - 1] = combined_tile;
+        tiles_[row][col] = kEmptyTile;
+
+    } else if (current_direction_ == Direction::DOWN) {
+        tiles_[row + 1][col] = combined_tile;
+        tiles_[row][col] = kEmptyTile;
     }
 }
 

@@ -43,6 +43,7 @@ private:
 
     Direction current_direction_;
 
+    const Tile kEmptyTile = Tile(0, "beige");
     /**
      * Moves given tile in given direction until tile cannot move anymore.
      * @param tile Tile representing number tile being moved.
@@ -51,16 +52,25 @@ private:
     //void MoveInDirection(Tile& tile, size_t row, size_t col);
     //void MoveAllTiles(size_t start_row, size_t start_col, int row_inc, int col_inc);
     void MoveUpUntilCollision();
+    bool CanMergeTileUp(size_t row, size_t col);
+
     void MoveRightUntilCollision();
+    bool CanMergeTileRight(size_t row, size_t col);
+
     void MoveLeftUntilCollision();
+    bool CanMergeTileLeft(size_t row, size_t col);
+
     void MoveDownUntilCollision();
+    bool CanMergeTileDown(size_t row, size_t col);
+
+    void MergeTiles(size_t row, size_t col);
 
     /*bool HasCollidedWithLeftWall(Tile& tile);
     bool HasCollidedWithRightWall(Tile& tile);
     bool HasCollidedWithTopWall(Tile& tile);
     bool HasCollidedWithBottomWall(Tile& tile);*/
     //Tile& FindCollidedTile(Tile& tile);
-    //bool HasCollidedWithTile(Tile& tile);
+
     //bool CheckTileMerge();
     //void MergeTiles();
 };
