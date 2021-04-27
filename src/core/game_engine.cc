@@ -12,7 +12,7 @@ GameEngine::GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_si
     board_size_(board_size) {
     current_direction_ = Direction::STILL;
     Tile tile(top_left_corner_ + glm::vec2(0, 2 * tile_side_length_), 2, "white");
-    Tile tile_(top_left_corner_ + glm::vec2(2 * tile_side_length_,0), 2, "white");
+    Tile tile_(top_left_corner_ + glm::vec2(3 * tile_side_length_,0), 2, "white");
     //tiles_.push_back(tile);
     //tiles_.push_back(tile_);
 
@@ -155,7 +155,6 @@ void GameEngine::MoveRightUntilCollision() {
             }
         }
     }
-
 
 
     /*if (tile.position_.x + tile_side_length_ + tile.kMoveSpeed >= top_left_corner_.x + board_size_) {
