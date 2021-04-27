@@ -21,25 +21,8 @@ void BoardDisplay::Draw() {
     ci::gl::color(ci::Color("gray"));
     ci::gl::drawSolidRect(game_box);
 
-    DrawTiles();
 }
 
-void BoardDisplay::DrawTiles() {
-    glm::vec2 tile_top_left = top_left_corner_;
-    glm::vec2 tile_bottom_right;
-
-    for (size_t row = 0; row < num_tiles_per_side_; row++) {
-        for (size_t col = 0; col < num_tiles_per_side_; col++) {
-            tile_bottom_right = tile_top_left + glm::vec2(tile_side_length_, tile_side_length_);
-            ci::Rectf empty_tile(tile_top_left + glm::vec2(kTileMargin, kTileMargin), tile_bottom_right - glm::vec2(kTileMargin, kTileMargin));
-            ci::gl::color(ci::Color("beige"));
-            ci::gl::drawSolidRect(empty_tile);
-
-            tile_top_left += glm::vec2(tile_side_length_, 0);
-        }
-        tile_top_left = glm::vec2(top_left_corner_.x, tile_top_left.y + tile_side_length_);
-    }
-}
 
 void BoardDisplay::DrawNumberTiles(const vector<vector<Tile>>& tiles) {
     glm::vec2 tile_top_left = top_left_corner_;
@@ -50,8 +33,16 @@ void BoardDisplay::DrawNumberTiles(const vector<vector<Tile>>& tiles) {
             ci::gl::color(tile.GetColor());
             ci::gl::drawSolidRect(num_tile);
 
+            //Draws tile number only if the tile is not empty
+            if (!tile.IsEmpty()) {
+                ci::gl::drawStringCentered(std::to_string(tile.GetNumber()),
+                                           tile_top_left + glm::vec2(tile_side_length_ / 2, tile_side_length_ / 3),
+                                           ci::Color("gray"), ci::Font("Times New roman", 40));
+            }
+            //Moves tile position to next tile position to the right
             tile_top_left += glm::vec2(tile_side_length_, 0);
         }
+        //Sets top left tile position to next row below
         tile_top_left = glm::vec2(top_left_corner_.x, tile_top_left.y + tile_side_length_);
     }
 

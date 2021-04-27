@@ -13,10 +13,14 @@ public:
                  double board_size);
 
     /**
-     * Displays the board.
+     * Displays the rectangle board outline.
      */
     void Draw();
 
+    /**
+     * Displays the given vectors of tiles covering the board.
+     * @param tiles 2d vector representing rows and columns of all tiles on the board
+     */
     void DrawNumberTiles(const vector<vector<Tile>>& tiles);
 
 
@@ -29,10 +33,6 @@ private:
     double tile_side_length_;
     double board_size_;
 
-    /**
-     * Draws the number tiles in the game.
-     */
-    void DrawTiles();
 };
 
 }

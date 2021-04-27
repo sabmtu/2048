@@ -15,27 +15,19 @@ public:
      */
     Tile(size_t num, ci::Color color);
 
-    //position vector
-    //glm::vec2 position_;
-
     //double GetMoveSpeed() const;
     const ci::Color& GetColor() const;
     size_t GetNumber() const;
 
-    /*//Methods to move tile
-    void MoveRight();
-    void MoveLeft();
-    void MoveUp();
-    void MoveDown();*/
+    bool IsEmpty() const;
 
-    bool IsEmpty();
     /**
      * Overload equality operator to check if two Tile objects are equal.
      * @param image const Tile reference representing Tile to be compared
      * @return bool representing whether or not the Tile values are all equal
      */
     bool operator==(const Tile& tile) const;
-    //double kMoveSpeed = 35;
+    //bool has_merged;
 
 private:
 

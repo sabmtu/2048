@@ -25,10 +25,9 @@ GameEngine::GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_si
     }
 
     Tile tile(2, "white");
+    tiles_[0][0] = tile;
     tiles_[2][0] = tile;
     tiles_[3][0] = tile;
-    tiles_[2][2] = tile;
-    tiles_[3][3] = tile;
 }
 
 const vector<vector<Tile>> &GameEngine::GetTiles() {
@@ -44,19 +43,19 @@ void GameEngine::MoveTiles() {
         case Direction::STILL:
             return;
         case Direction::UP:
-            MoveUpUntilCollision();
+            MoveTilesUp();
             break;
 
         case Direction::DOWN:
-            MoveDownUntilCollision();
+            MoveTilesDown();
             break;
 
         case Direction::LEFT:
-            MoveLeftUntilCollision();
+            MoveTilesLeft();
             break;
 
         case Direction::RIGHT:
-            MoveRightUntilCollision();
+            MoveTilesRight();
             break;
 
         default:
@@ -65,35 +64,31 @@ void GameEngine::MoveTiles() {
 }
 
 
-void GameEngine::MoveUpUntilCollision() {
-    for (size_t row = 1; row < num_tiles_per_side_; row++) {
+void GameEngine::MoveTilesUp() {
+    for (size_t row = 0; row < num_tiles_per_side_ - 1; row++) {
         for (size_t col = 0; col < num_tiles_per_side_; col++) {
-            if (tiles_[row - 1][col].IsEmpty()) {
-                tiles_[row - 1][col] = tiles_[row][col];
+            if (tiles_[row][col].IsEmpty()) {
 
-                tiles_[row][col] = kEmptyTile;
-            }
+                //Moves tile below to current tile position and sets tile below position to an empty tile
+                tiles_[row][col] = tiles_[row + 1][col];
+                tiles_[row + 1][col] = kEmptyTile;
 
-            if (CanMergeTileUp(row, col)) {
+            } else if (CanMergeTileUp(row, col)) {
                 MergeTiles(row, col);
             }
         }
     }
+    //current_direction_ = Direction::STILL;
 }
 
-bool GameEngine::CanMergeTileUp(size_t row, size_t col) {
-    return (!tiles_[row - 1][col].IsEmpty() && (tiles_[row - 1][col].GetNumber() == tiles_[row][col].GetNumber()));
-}
-
-
-
-void GameEngine::MoveRightUntilCollision() {
+void GameEngine::MoveTilesRight() {
     for (size_t row = 0; row < num_tiles_per_side_; row++) {
-        for (int col = num_tiles_per_side_ - 2; col >= 0; col--) {
-            if (tiles_[row][col + 1].IsEmpty()) {
-                tiles_[row][col + 1] = tiles_[row][col];
+        for (size_t col = num_tiles_per_side_ - 1; col >= 1; col--) {
+            if (tiles_[row][col].IsEmpty()) {
 
-                tiles_[row][col] = kEmptyTile;
+                //Moves tile to the left to current tile position and sets left tile to an empty tile
+                tiles_[row][col] = tiles_[row][col - 1];
+                tiles_[row][col - 1] = kEmptyTile;
 
             } else if (CanMergeTileRight(row, col)) {
                 MergeTiles(row, col);
@@ -102,16 +97,14 @@ void GameEngine::MoveRightUntilCollision() {
     }
 }
 
-bool GameEngine::CanMergeTileRight(size_t row, size_t col) {
-    return (!tiles_[row][col + 1].IsEmpty() && (tiles_[row][col + 1].GetNumber() == tiles_[row][col].GetNumber()));
-}
-
-void GameEngine::MoveLeftUntilCollision() {
+void GameEngine::MoveTilesLeft() {
     for (size_t row = 0; row < num_tiles_per_side_; row++) {
-        for (size_t col = 1; col < num_tiles_per_side_; col++) {
-            if (tiles_[row][col - 1].IsEmpty()) {
-                tiles_[row][col - 1] = tiles_[row][col];
-                tiles_[row][col] = kEmptyTile;
+        for (size_t col = 0; col < num_tiles_per_side_ - 1; col++) {
+            if (tiles_[row][col].IsEmpty()) {
+
+                //Moves tile to the right to current tile position and sets right tile position to an empty tile
+                tiles_[row][col] = tiles_[row][col + 1];
+                tiles_[row][col + 1] = kEmptyTile;
 
             } else if (CanMergeTileLeft(row, col)) {
                 MergeTiles(row, col);
@@ -120,17 +113,14 @@ void GameEngine::MoveLeftUntilCollision() {
     }
 }
 
-bool GameEngine::CanMergeTileLeft(size_t row, size_t col) {
-    return (!tiles_[row][col - 1].IsEmpty() && (tiles_[row][col - 1].GetNumber() == tiles_[row][col].GetNumber()));
-}
-
-void GameEngine::MoveDownUntilCollision() {
-    for (int row = num_tiles_per_side_ - 2; row >= 0; row--) {
+void GameEngine::MoveTilesDown() {
+    for (size_t row = num_tiles_per_side_ - 1; row >= 1; row--) {
         for (size_t col = 0; col < num_tiles_per_side_; col++) {
-            if (tiles_[row + 1][col].IsEmpty()) {
+            if (tiles_[row][col].IsEmpty()) {
 
-                tiles_[row + 1][col] = tiles_[row][col];
-                tiles_[row][col] = kEmptyTile;
+                //Moves tile above to current tile position and sets tile above to an empty tile
+                tiles_[row][col] = tiles_[row - 1][col];
+                tiles_[row - 1][col] = kEmptyTile;
 
             } else if (CanMergeTileDown(row, col)) {
                 MergeTiles(row, col);
@@ -139,60 +129,96 @@ void GameEngine::MoveDownUntilCollision() {
     }
 }
 
+bool GameEngine::CanMergeTileUp(size_t row, size_t col) {
+    return (!tiles_[row][col].IsEmpty() && (tiles_[row + 1][col].GetNumber() == tiles_[row][col].GetNumber()));
+}
+
+bool GameEngine::CanMergeTileRight(size_t row, size_t col) {
+    return (!tiles_[row][col].IsEmpty() && (tiles_[row][col - 1].GetNumber() == tiles_[row][col].GetNumber()));
+}
+
+bool GameEngine::CanMergeTileLeft(size_t row, size_t col) {
+    return (!tiles_[row][col].IsEmpty() && (tiles_[row][col + 1].GetNumber() == tiles_[row][col].GetNumber()));
+}
+
 bool GameEngine::CanMergeTileDown(size_t row, size_t col) {
-    return (!tiles_[row + 1][col].IsEmpty() && (tiles_[row + 1][col].GetNumber() == tiles_[row][col].GetNumber()));
+    return (!tiles_[row][col].IsEmpty() && (tiles_[row - 1][col].GetNumber() == tiles_[row][col].GetNumber()));
 }
 
 void GameEngine::MergeTiles(size_t row, size_t col) {
     Tile combined_tile(2 * tiles_[row][col].GetNumber(), "yellow");
 
+    //Sets tile at given row and column to new merged tile and sets corresponding touching tile to empty
     if (current_direction_ == Direction::UP) {
-        tiles_[row - 1][col] = combined_tile;
-        tiles_[row][col] = kEmptyTile;
+        tiles_[row][col] = combined_tile;
+        tiles_[row + 1][col] = kEmptyTile;
 
     } else if (current_direction_ == Direction::RIGHT) {
-        tiles_[row][col + 1] = combined_tile;
-        tiles_[row][col] = kEmptyTile;
+        tiles_[row][col] = combined_tile;
+        tiles_[row][col - 1] = kEmptyTile;
 
     } else if (current_direction_ == Direction::LEFT) {
-        tiles_[row][col - 1] = combined_tile;
-        tiles_[row][col] = kEmptyTile;
+        tiles_[row][col] = combined_tile;
+        tiles_[row][col + 1] = kEmptyTile;
 
     } else if (current_direction_ == Direction::DOWN) {
-        tiles_[row + 1][col] = combined_tile;
-        tiles_[row][col] = kEmptyTile;
+        tiles_[row][col] = combined_tile;
+        tiles_[row + 1][col] = kEmptyTile;
     }
 }
 
-/*
+bool GameEngine::HasFinishedMovingUp() {
+    return false;
+}
 
-bool GameEngine::HasCollidedWithTile(Tile &tile) {
-    for (const vector<Tile>& columns : tiles_) {
-        for (const Tile& check_tile : columns) {
-            if (check_tile == tile) {
-                continue;
+
+bool GameEngine::HasFinishedMovingRight() {
+    return false;
+}
+
+bool GameEngine::HasFinishedMovingLeft() {
+    return false;
+}
+
+bool GameEngine::HasFinishedMovingDown() {
+    return false;
+}
+
+    bool GameEngine::IsDoneMoving() {
+    for (size_t row = 0; row < num_tiles_per_side_; row++) {
+        for (size_t col = 0; col < num_tiles_per_side_; col++) {
+            if (current_direction_ == Direction::LEFT) {
+                if (col == 0) {
+                    continue;
+
+                } else if (tiles_[row][0].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+                    return false;
+                }
             }
 
-            //Check if touching tiles to the left and right
-            if (tile.position_.x - tile.kMoveSpeed <= check_tile.position_.x + tile_side_length_
-                || tile.position_.x + tile_side_length_ + tile.kMoveSpeed >= check_tile.position_.x) {
-                return true;
+            if (current_direction_ == Direction::RIGHT) {
+                if (col == num_tiles_per_side_ - 1) {
+                    continue;
 
-                //Check if touching tiles above and below
-            } else if (tile.position_.y - tile.kMoveSpeed <= check_tile.position_.y + tile_side_length_
-                       || tile.position_.y + tile_side_length_ + tile.kMoveSpeed >= check_tile.position_.y) {
-                return true;
+                } else if (tiles_[row][num_tiles_per_side_ - 1].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+                    return false;
+                }
+            }
+
+            if (current_direction_ == Direction::UP) {
+                if (tiles_[0][col].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+                    return false;
+                }
+            }
+
+            if (current_direction_ == Direction::DOWN) {
+                if (tiles_[num_tiles_per_side_ - 1][col].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+                    return false;
+                }
             }
         }
     }
-
-    return false;
 }
-*/
 
-/*
-Tile &GameEngine::FindCollidedTile(Tile &tile) {
-
-}*/
 
 }
