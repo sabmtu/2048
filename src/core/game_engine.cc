@@ -44,6 +44,9 @@ void GameEngine::MoveTiles() {
             return;
         case Direction::UP:
             MoveTilesUp();
+            /*if (HasFinishedMovingUp()) {
+                current_direction_ = Direction::STILL;
+            }*/
             break;
 
         case Direction::DOWN:
@@ -78,7 +81,6 @@ void GameEngine::MoveTilesUp() {
             }
         }
     }
-    //current_direction_ = Direction::STILL;
 }
 
 void GameEngine::MoveTilesRight() {
@@ -168,57 +170,48 @@ void GameEngine::MergeTiles(size_t row, size_t col) {
 }
 
 bool GameEngine::HasFinishedMovingUp() {
-    return false;
+    for (size_t row = 1; row < num_tiles_per_side_; row++) {
+        for (size_t col = 0; col < num_tiles_per_side_; col++) {
+            if (tiles_[0][col].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 
 bool GameEngine::HasFinishedMovingRight() {
-    return false;
-}
-
-bool GameEngine::HasFinishedMovingLeft() {
-    return false;
-}
-
-bool GameEngine::HasFinishedMovingDown() {
-    return false;
-}
-
-    bool GameEngine::IsDoneMoving() {
     for (size_t row = 0; row < num_tiles_per_side_; row++) {
-        for (size_t col = 0; col < num_tiles_per_side_; col++) {
-            if (current_direction_ == Direction::LEFT) {
-                if (col == 0) {
-                    continue;
-
-                } else if (tiles_[row][0].IsEmpty() && !tiles_[row][col].IsEmpty()) {
-                    return false;
-                }
-            }
-
-            if (current_direction_ == Direction::RIGHT) {
-                if (col == num_tiles_per_side_ - 1) {
-                    continue;
-
-                } else if (tiles_[row][num_tiles_per_side_ - 1].IsEmpty() && !tiles_[row][col].IsEmpty()) {
-                    return false;
-                }
-            }
-
-            if (current_direction_ == Direction::UP) {
-                if (tiles_[0][col].IsEmpty() && !tiles_[row][col].IsEmpty()) {
-                    return false;
-                }
-            }
-
-            if (current_direction_ == Direction::DOWN) {
-                if (tiles_[num_tiles_per_side_ - 1][col].IsEmpty() && !tiles_[row][col].IsEmpty()) {
-                    return false;
-                }
+        for (size_t col = 0; col < num_tiles_per_side_ - 1; col++) {
+            if (tiles_[row][num_tiles_per_side_ - 1].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+                return false;
             }
         }
     }
+    return true;
 }
 
+bool GameEngine::HasFinishedMovingLeft() {
+    for (size_t row = 0; row < num_tiles_per_side_; row++) {
+        for (size_t col = 1; col < num_tiles_per_side_; col++) {
+            if (tiles_[row][0].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool GameEngine::HasFinishedMovingDown() {
+    for (size_t row = 1; row < num_tiles_per_side_ - 1; row++) {
+        for (size_t col = 0; col < num_tiles_per_side_; col++) {
+            if (tiles_[num_tiles_per_side_ - 1][col].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 }

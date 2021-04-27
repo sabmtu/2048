@@ -52,9 +52,9 @@ private:
     bool CanMergeTileDown(size_t row, size_t col);
 
     bool HasFinishedMovingUp();
-    bool HasFinishedMovingUp();
-    bool HasFinishedMovingUp();
-    bool HasFinishedMovingUp();
+    bool HasFinishedMovingRight();
+    bool HasFinishedMovingLeft();
+    bool HasFinishedMovingDown();
     void MergeTiles(size_t row, size_t col);
 
 };
