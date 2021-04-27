@@ -48,7 +48,7 @@ private:
      * @param tile Tile representing number tile being moved.
      * @param direction Direction representing direction tile should move.
      */
-    void MoveInDirection(Tile& tile, size_t row, size_t col);
+    //void MoveInDirection(Tile& tile, size_t row, size_t col);
     //void MoveAllTiles(size_t start_row, size_t start_col, int row_inc, int col_inc);
     void MoveUpUntilCollision();
     void MoveRightUntilCollision();
@@ -60,7 +60,7 @@ private:
     bool HasCollidedWithTopWall(Tile& tile);
     bool HasCollidedWithBottomWall(Tile& tile);*/
     //Tile& FindCollidedTile(Tile& tile);
-    bool HasCollidedWithTile(Tile& tile);
+    //bool HasCollidedWithTile(Tile& tile);
     //bool CheckTileMerge();
     //void MergeTiles();
 };

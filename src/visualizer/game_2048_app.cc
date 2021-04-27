@@ -13,14 +13,15 @@ Game2048App::Game2048App()
 void Game2048App::draw() {
     ci::Color8u background_color(230, 230, 220);  // light yellow
     ci::gl::clear(background_color);
+    game_engine_.MoveTiles();
 
     board_display_.Draw();
     board_display_.DrawNumberTiles(game_engine_.GetTiles());
 }
 
-void Game2048App::update() {
+/*void Game2048App::update() {
     game_engine_.MoveTiles();
-}
+}*/
 
 void Game2048App::keyDown(ci::app::KeyEvent event) {
     switch (event.getCode()) {

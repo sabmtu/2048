@@ -13,7 +13,7 @@ public:
     Game2048App();
 
     void draw() override;
-    void update() override;
+    //void update() override;
     void keyDown(ci::app::KeyEvent event) override;
 
     const double kWindowSize = 675;

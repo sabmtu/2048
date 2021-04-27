@@ -10,24 +10,23 @@ public:
 
     /**
      * Constructor to initialize each number tile.
-     * @param position vec2 representing coordinates of position vector
      * @param num size_t representing number of the tile
      * @param color Color of the number tile
      */
-    Tile(glm::vec2 position, size_t num, ci::Color color);
+    Tile(size_t num, ci::Color color);
 
     //position vector
-    glm::vec2 position_;
+    //glm::vec2 position_;
 
     //double GetMoveSpeed() const;
     const ci::Color& GetColor() const;
     size_t GetNumber() const;
 
-    //Methods to move tile
+    /*//Methods to move tile
     void MoveRight();
     void MoveLeft();
     void MoveUp();
-    void MoveDown();
+    void MoveDown();*/
 
     bool IsEmpty();
     /**
@@ -36,7 +35,7 @@ public:
      * @return bool representing whether or not the Tile values are all equal
      */
     bool operator==(const Tile& tile) const;
-    double kMoveSpeed = 35;
+    //double kMoveSpeed = 35;
 
 private:
 
