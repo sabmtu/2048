@@ -17,7 +17,7 @@ GameEngine::GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_si
     //tiles_.push_back(tile_);
 
     glm::vec2 top_left = top_left_corner_;
-    for (size_t i = 0; i < num_tiles_per_side_ - 1; i++) {
+    for (size_t i = 0; i < num_tiles_per_side_; i++) {
         vector<Tile> test;
         for (size_t j = 0; j < num_tiles_per_side_; j++) {
             Tile empty(top_left, 0, "beige");
@@ -28,15 +28,17 @@ GameEngine::GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_si
         top_left = glm::vec2(top_left_corner_.x, top_left.y + tile_side_length_);
     }
 
-    vector<Tile> tiles;
-    tiles.push_back(tile);
+    tiles_[0][2] = tile;
+    //tiles_[3][0] = tile_;
+    /*vector<Tile> tiles;
     Tile empty(tile.position_ + glm::vec2(tile_side_length_,0), 0, "beige");
     tiles.push_back(empty);
+    tiles.push_back(tile);
     Tile empty_2(tile.position_ + glm::vec2(2 * tile_side_length_,0), 0, "beige");
     tiles.push_back(empty_2);
     Tile empty_3(tile.position_ + glm::vec2(3 * tile_side_length_,0), 0, "beige");
     tiles.push_back(empty_3);
-    tiles_.push_back(tiles);
+    tiles_.push_back(tiles);*/
 }
 
 /*GameEngine::GameEngine(Board& board): board_(board) {
@@ -123,11 +125,11 @@ void GameEngine::MoveUpUntilCollision() {
     for (size_t row = 1; row < num_tiles_per_side_; row++) {
         for (size_t col = 0; col < num_tiles_per_side_; col++) {
             if (tiles_[row - 1][col].IsEmpty()) {
-                Tile temp = tiles_[row][col];
+                glm::vec2 temp = tiles_[row][col].position_;
                 tiles_[row][col].position_ = tiles_[row - 1][col].position_;
                 tiles_[row - 1][col] = tiles_[row][col];
 
-                Tile empty_tile(temp.position_, 0, "beige");
+                Tile empty_tile(temp, 0, "beige");
                 tiles_[row][col] = empty_tile;
             }
         }
@@ -194,6 +196,7 @@ void GameEngine::MoveDownUntilCollision() {
         for (size_t col = 0; col < num_tiles_per_side_; col++) {
             if (tiles_[row + 1][col].IsEmpty()) {
                 Tile temp = tiles_[row][col];
+
                 tiles_[row][col].position_ = tiles_[row + 1][col].position_;
                 tiles_[row + 1][col] = tiles_[row][col];
 
