@@ -16,7 +16,7 @@ enum class Direction {
 class GameEngine {
 public:
     GameEngine();
-    GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_side, double board_size);
+    GameEngine(size_t num_tiles_per_side);
 
     void SetCurrentDirection(const Direction& direction);
 
@@ -24,6 +24,7 @@ public:
      * Moves tiles in given direction.
      */
     void MoveTiles();
+    void EndMovement();
 
     const vector<vector<Tile>>& GetTiles();
 
@@ -31,10 +32,8 @@ private:
     vector<vector<Tile>> tiles_;
 
     //Details and size of tiles and board
-    glm::vec2 top_left_corner_;
     size_t num_tiles_per_side_;
-    double tile_side_length_;
-    double board_size_;
+
 
     Direction current_direction_;
 
@@ -51,12 +50,14 @@ private:
     bool CanMergeTileLeft(size_t row, size_t col);
     bool CanMergeTileDown(size_t row, size_t col);
 
+    //void MergeTilesUp();
     bool HasFinishedMovingUp();
     bool HasFinishedMovingRight();
     bool HasFinishedMovingLeft();
     bool HasFinishedMovingDown();
     void MergeTiles(size_t row, size_t col);
 
+    void AddNewTile();
 };
 
 }

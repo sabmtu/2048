@@ -7,6 +7,7 @@ Tile::Tile() { }
 Tile::Tile(size_t num, ci::Color color) {
     number_ = num;
     color_ = color;
+    is_blocked_ = false;
 }
 
 const ci::Color &Tile::GetColor() const {
@@ -26,6 +27,14 @@ bool Tile::operator==(const Tile &tile) const {
 
 bool Tile::IsEmpty() const{
     return number_ == 0;
+}
+
+void Tile::SetIsBlocked(bool set) {
+    is_blocked_ = set;
+}
+
+bool Tile::GetIsBlocked() const {
+    return is_blocked_;
 }
 
 

@@ -18,7 +18,8 @@ public:
     //double GetMoveSpeed() const;
     const ci::Color& GetColor() const;
     size_t GetNumber() const;
-
+    bool GetIsBlocked() const;
+    void SetIsBlocked(bool set);
     bool IsEmpty() const;
 
     /**
@@ -30,7 +31,7 @@ public:
     //bool has_merged;
 
 private:
-
+    bool is_blocked_;
     size_t number_;
     ci::Color color_;
 

@@ -6,26 +6,23 @@ GameEngine::GameEngine() {
 
 }
 
-GameEngine::GameEngine(const glm::vec2 &top_left_corner, size_t num_tiles_per_side, double board_size)
-    : top_left_corner_(top_left_corner), num_tiles_per_side_(num_tiles_per_side),
-    tile_side_length_(board_size / num_tiles_per_side_),
-    board_size_(board_size) {
+GameEngine::GameEngine(size_t num_tiles_per_side)
+    : num_tiles_per_side_(num_tiles_per_side) {
+
     current_direction_ = Direction::STILL;
 
-    board_size_ += 1;
-    glm::vec2 top_left = top_left_corner_;
     for (size_t i = 0; i < num_tiles_per_side_; i++) {
         vector<Tile> test;
         for (size_t j = 0; j < num_tiles_per_side_; j++) {
             test.push_back(kEmptyTile);
-            top_left.x += tile_side_length_;
         }
         tiles_.push_back(test);
-        top_left = glm::vec2(top_left_corner_.x, top_left.y + tile_side_length_);
     }
 
     Tile tile(2, "white");
+    //Tile tile4(4, "white");
     tiles_[0][0] = tile;
+    tiles_[1][0] = tile;
     tiles_[2][0] = tile;
     tiles_[3][0] = tile;
 }
@@ -45,7 +42,9 @@ void GameEngine::MoveTiles() {
         case Direction::UP:
             MoveTilesUp();
             /*if (HasFinishedMovingUp()) {
+                MergeTilesUp();
                 current_direction_ = Direction::STILL;
+                AddNewTile();
             }*/
             break;
 
@@ -68,16 +67,18 @@ void GameEngine::MoveTiles() {
 
 
 void GameEngine::MoveTilesUp() {
-    for (size_t row = 0; row < num_tiles_per_side_ - 1; row++) {
-        for (size_t col = 0; col < num_tiles_per_side_; col++) {
+    for (size_t col = 0; col < num_tiles_per_side_; col++) {
+        for (size_t row = 0; row < num_tiles_per_side_ - 1; row++) {
             if (tiles_[row][col].IsEmpty()) {
 
                 //Moves tile below to current tile position and sets tile below position to an empty tile
                 tiles_[row][col] = tiles_[row + 1][col];
                 tiles_[row + 1][col] = kEmptyTile;
+            }
 
-            } else if (CanMergeTileUp(row, col)) {
+            if (CanMergeTileUp(row, col) && !tiles_[row][col].GetIsBlocked()) {
                 MergeTiles(row, col);
+                tiles_[row][col].SetIsBlocked(true);
             }
         }
     }
@@ -92,7 +93,8 @@ void GameEngine::MoveTilesRight() {
                 tiles_[row][col] = tiles_[row][col - 1];
                 tiles_[row][col - 1] = kEmptyTile;
 
-            } else if (CanMergeTileRight(row, col)) {
+            }
+            if (CanMergeTileRight(row, col)) {
                 MergeTiles(row, col);
             }
         }
@@ -108,7 +110,8 @@ void GameEngine::MoveTilesLeft() {
                 tiles_[row][col] = tiles_[row][col + 1];
                 tiles_[row][col + 1] = kEmptyTile;
 
-            } else if (CanMergeTileLeft(row, col)) {
+            }
+            if (CanMergeTileLeft(row, col)) {
                 MergeTiles(row, col);
             }
         }
@@ -124,9 +127,12 @@ void GameEngine::MoveTilesDown() {
                 tiles_[row][col] = tiles_[row - 1][col];
                 tiles_[row - 1][col] = kEmptyTile;
 
-            } else if (CanMergeTileDown(row, col)) {
+            }
+
+            if (CanMergeTileDown(row, col)) {
                 MergeTiles(row, col);
             }
+
         }
     }
 }
@@ -169,11 +175,17 @@ void GameEngine::MergeTiles(size_t row, size_t col) {
     }
 }
 
+
 bool GameEngine::HasFinishedMovingUp() {
     for (size_t row = 1; row < num_tiles_per_side_; row++) {
         for (size_t col = 0; col < num_tiles_per_side_; col++) {
             if (tiles_[0][col].IsEmpty() && !tiles_[row][col].IsEmpty()) {
                 return false;
+            }
+            if (CanMergeTileUp(row - 1, col)) {
+                if (!tiles_[row][col].GetIsBlocked()) {
+                    return false;
+                }
             }
         }
     }
@@ -212,6 +224,28 @@ bool GameEngine::HasFinishedMovingDown() {
         }
     }
     return true;
+}
+
+void GameEngine::AddNewTile() {
+    size_t row;
+    size_t col;
+
+    do {
+        row = rand() % num_tiles_per_side_;
+        col = rand() % num_tiles_per_side_;
+    } while (tiles_[row][col].IsEmpty());
+
+    Tile new_tile(2, "white");
+    tiles_[row][col] = new_tile;
+}
+
+void GameEngine::EndMovement() {
+    if (current_direction_ == Direction::UP) {
+        if (HasFinishedMovingUp()) {
+            current_direction_ = Direction::STILL;
+            //AddNewTile();
+        }
+    }
 }
 
 }
