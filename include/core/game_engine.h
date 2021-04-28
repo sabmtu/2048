@@ -33,10 +33,7 @@ private:
 
     //Details and size of tiles and board
     size_t num_tiles_per_side_;
-
-
     Direction current_direction_;
-
     const Tile kEmptyTile = Tile(0, "beige");
 
 
@@ -50,12 +47,12 @@ private:
     bool CanMergeTileLeft(size_t row, size_t col);
     bool CanMergeTileDown(size_t row, size_t col);
 
-    //void MergeTilesUp();
     bool HasFinishedMovingUp();
     bool HasFinishedMovingRight();
     bool HasFinishedMovingLeft();
     bool HasFinishedMovingDown();
     void MergeTiles(size_t row, size_t col);
+    void FreeTilesForNextMove();
 
     void AddNewTile();
 };

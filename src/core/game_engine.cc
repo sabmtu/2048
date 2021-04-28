@@ -94,8 +94,9 @@ void GameEngine::MoveTilesRight() {
                 tiles_[row][col - 1] = kEmptyTile;
 
             }
-            if (CanMergeTileRight(row, col)) {
+            if (CanMergeTileRight(row, col) && !tiles_[row][col].GetIsBlocked()) {
                 MergeTiles(row, col);
+                tiles_[row][col].SetIsBlocked(true);
             }
         }
     }
@@ -111,8 +112,9 @@ void GameEngine::MoveTilesLeft() {
                 tiles_[row][col + 1] = kEmptyTile;
 
             }
-            if (CanMergeTileLeft(row, col)) {
+            if (CanMergeTileLeft(row, col) && !tiles_[row][col].GetIsBlocked()) {
                 MergeTiles(row, col);
+                tiles_[row][col].SetIsBlocked(true);
             }
         }
     }
@@ -126,11 +128,11 @@ void GameEngine::MoveTilesDown() {
                 //Moves tile above to current tile position and sets tile above to an empty tile
                 tiles_[row][col] = tiles_[row - 1][col];
                 tiles_[row - 1][col] = kEmptyTile;
-
             }
 
-            if (CanMergeTileDown(row, col)) {
+            if (CanMergeTileDown(row, col) && !tiles_[row][col].GetIsBlocked()) {
                 MergeTiles(row, col);
+                tiles_[row][col].SetIsBlocked(true);
             }
 
         }
@@ -171,7 +173,7 @@ void GameEngine::MergeTiles(size_t row, size_t col) {
 
     } else if (current_direction_ == Direction::DOWN) {
         tiles_[row][col] = combined_tile;
-        tiles_[row + 1][col] = kEmptyTile;
+        tiles_[row - 1][col] = kEmptyTile;
     }
 }
 
@@ -199,6 +201,11 @@ bool GameEngine::HasFinishedMovingRight() {
             if (tiles_[row][num_tiles_per_side_ - 1].IsEmpty() && !tiles_[row][col].IsEmpty()) {
                 return false;
             }
+            if (CanMergeTileRight(row , col + 1)) {
+                if (!tiles_[row][col].GetIsBlocked()) {
+                    return false;
+                }
+            }
         }
     }
     return true;
@@ -210,16 +217,26 @@ bool GameEngine::HasFinishedMovingLeft() {
             if (tiles_[row][0].IsEmpty() && !tiles_[row][col].IsEmpty()) {
                 return false;
             }
+            if (CanMergeTileLeft(row, col - 1)) {
+                if (!tiles_[row][col].GetIsBlocked()) {
+                    return false;
+                }
+            }
         }
     }
     return true;
 }
 
 bool GameEngine::HasFinishedMovingDown() {
-    for (size_t row = 1; row < num_tiles_per_side_ - 1; row++) {
+    for (size_t row = 1; row < num_tiles_per_side_; row++) {
         for (size_t col = 0; col < num_tiles_per_side_; col++) {
             if (tiles_[num_tiles_per_side_ - 1][col].IsEmpty() && !tiles_[row][col].IsEmpty()) {
                 return false;
+            }
+            if (CanMergeTileUp(row - 1, col)) {
+                if (!tiles_[row][col].GetIsBlocked()) {
+                    return false;
+                }
             }
         }
     }
@@ -233,17 +250,27 @@ void GameEngine::AddNewTile() {
     do {
         row = rand() % num_tiles_per_side_;
         col = rand() % num_tiles_per_side_;
-    } while (tiles_[row][col].IsEmpty());
+    } while (!tiles_[row][col].IsEmpty());
 
     Tile new_tile(2, "white");
     tiles_[row][col] = new_tile;
 }
 
 void GameEngine::EndMovement() {
-    if (current_direction_ == Direction::UP) {
-        if (HasFinishedMovingUp()) {
-            current_direction_ = Direction::STILL;
-            //AddNewTile();
+    if ((current_direction_ == Direction::UP && HasFinishedMovingUp())
+    || (current_direction_ == Direction::LEFT && HasFinishedMovingLeft())
+    || (current_direction_ == Direction::RIGHT && HasFinishedMovingRight())
+    || (current_direction_ == Direction::DOWN && HasFinishedMovingDown())) {
+        current_direction_ = Direction::STILL;
+        FreeTilesForNextMove();
+        AddNewTile();
+    }
+}
+
+void GameEngine::FreeTilesForNextMove() {
+    for (size_t row = 0; row < num_tiles_per_side_; row++) {
+        for (size_t col = 0; col < num_tiles_per_side_; col++) {
+            tiles_[row][col].SetIsBlocked(false);
         }
     }
 }
