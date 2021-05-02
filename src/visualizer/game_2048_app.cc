@@ -12,6 +12,7 @@ Game2048App::Game2048App()
 void Game2048App::draw() {
     ci::Color8u background_color(230, 230, 220);  // light yellow
     ci::gl::clear(background_color);
+
     game_engine_.MoveTiles();
     game_engine_.EndMovement();
 

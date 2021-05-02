@@ -8,7 +8,7 @@ GameEngine::GameEngine() {
 
 GameEngine::GameEngine(size_t num_tiles_per_side)
     : num_tiles_per_side_(num_tiles_per_side) {
-
+    score_ = 0;
     current_direction_ = Direction::STILL;
 
     //Initialize board of tiles to empty tiles
@@ -22,12 +22,18 @@ GameEngine::GameEngine(size_t num_tiles_per_side)
 
     //Initialize starter tiles
     Tile tile(2, "white");
-    tiles_[2][0] = tile;
-    tiles_[1][1] = tile;
+    tiles_[0][2] = tile;
+    tiles_[1][2] = tile;
+    tiles_[2][2] = tile;
+    tiles_[3][2] = tile;
 }
 
 const vector<vector<Tile>> &GameEngine::GetTiles() {
     return tiles_;
+}
+
+const size_t GameEngine::GetScore() {
+    return score_;
 }
 
 void GameEngine::SetCurrentDirection(const Direction& direction) {
@@ -155,8 +161,19 @@ bool GameEngine::CanMergeTileDown(size_t row, size_t col) {
 }
 
 void GameEngine::MergeTiles(size_t row, size_t col) {
-    Tile combined_tile(2 * tiles_[row][col].GetNumber(), "white");
+    size_t merged_number = 2 * tiles_[row][col].GetNumber();
+    ci::Color color;
+    auto it = kTileColors.find(merged_number);
+    if (it != kTileColors.end()) {
+        color = it->second;
 
+    } else {
+        color = ci::Color8u(14, 14, 0);
+    }
+
+    Tile combined_tile(merged_number, color);
+    score_ += merged_number;
+    
     //Sets tile at given row and column to new merged tile and sets corresponding touching tile to empty
     if (current_direction_ == Direction::UP) {
         tiles_[row][col] = combined_tile;
@@ -178,16 +195,16 @@ void GameEngine::MergeTiles(size_t row, size_t col) {
 
 
 bool GameEngine::HasFinishedMovingUp() {
-    for (size_t row = 1; row < num_tiles_per_side_; row++) {
-        for (size_t col = 0; col < num_tiles_per_side_; col++) {
+    for (size_t col = 0; col < num_tiles_per_side_; col++) {
+        for (size_t row = 0; row < num_tiles_per_side_ - 1; row++) {
 
             //If tiles in first row are empty and tiles below are not, tiles must keep moving up
-            if (tiles_[0][col].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+            if (tiles_[row][col].IsEmpty() && !tiles_[row + 1][col].IsEmpty()) {
                 return false;
             }
 
             //If tiles can still merge on this turn, tiles have not finished moving
-            if (CanMergeTileUp(row - 1, col)) {
+            if (CanMergeTileUp(row, col)) {
                 if (!tiles_[row][col].GetIsBlocked()) {
                     return false;
                 }
@@ -289,5 +306,6 @@ void GameEngine::FreeTilesForNextMove() {
         }
     }
 }
+
 
 }

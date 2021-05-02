@@ -1,7 +1,6 @@
 #pragma once
 
 #include "cinder/gl/gl.h"
-//#include "board.h"
 #include "tile.h"
 
 namespace game_2048 {
@@ -24,6 +23,7 @@ public:
     GameEngine(size_t num_tiles_per_side);
 
     const vector<vector<Tile>>& GetTiles();
+    const size_t GetScore();
     void SetCurrentDirection(const Direction& direction);
 
     /**
@@ -44,8 +44,26 @@ private:
     size_t num_tiles_per_side_;
     Direction current_direction_;
 
+    size_t score_;
+
     //Empty tile
     const Tile kEmptyTile = Tile(0, "beige");
+
+    const std::map<size_t, ci::Color> kTileColors = {
+            {2, ci::Color8u(232, 222, 209)},
+            {4, ci::Color8u(255, 248, 232)},
+            {8, ci::Color8u(255, 186, 102)},
+            {16, ci::Color8u(249, 155, 65)},
+            {32, ci::Color8u(234, 135, 98)},
+            {64, ci::Color8u(249, 78, 50)},
+            {128, ci::Color8u(250, 236, 159)},
+            {256, ci::Color8u(248, 227, 110)},
+            {512, ci::Color8u(254, 231, 102)},
+            {1024, ci::Color8u(255, 223, 31)},
+            {2048, ci::Color8u(253, 203, 50)},
+            {4096, ci::Color8u(93, 187, 99)}
+    };
+
 
     /**
      * Methods to move and merge all tiles in corresponding directions.
