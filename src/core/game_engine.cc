@@ -22,10 +22,12 @@ GameEngine::GameEngine(size_t num_tiles_per_side)
 
     //Initialize starter tiles
     Tile tile(2, "white");
+    Tile tile4(4, "white");
+    Tile tile8(8, "white");
     tiles_[0][2] = tile;
     tiles_[1][2] = tile;
-    tiles_[2][2] = tile;
-    tiles_[3][2] = tile;
+    tiles_[2][2] = tile4;
+    tiles_[3][2] = tile8;
 }
 
 const vector<vector<Tile>> &GameEngine::GetTiles() {
@@ -205,7 +207,7 @@ bool GameEngine::HasFinishedMovingUp() {
 
             //If tiles can still merge on this turn, tiles have not finished moving
             if (CanMergeTileUp(row, col)) {
-                if (!tiles_[row][col].GetIsBlocked()) {
+                if (!tiles_[row][col].GetIsBlocked() && !tiles_[row + 1][col].GetIsBlocked()) {
                     return false;
                 }
             }
@@ -218,13 +220,13 @@ bool GameEngine::HasFinishedMovingUp() {
 bool GameEngine::HasFinishedMovingRight() {
     for (size_t row = 0; row < num_tiles_per_side_; row++) {
         for (size_t col = 0; col < num_tiles_per_side_ - 1; col++) {
-            if (tiles_[row][num_tiles_per_side_ - 1].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+            if (tiles_[row][col + 1].IsEmpty() && !tiles_[row][col].IsEmpty()) {
                 return false;
             }
 
             //If tiles can still merge on this turn, tiles have not finished moving
             if (CanMergeTileRight(row , col + 1)) {
-                if (!tiles_[row][col].GetIsBlocked()) {
+                if (!tiles_[row][col].GetIsBlocked() && !tiles_[row][col + 1].GetIsBlocked()) {
                     return false;
                 }
             }
@@ -235,13 +237,13 @@ bool GameEngine::HasFinishedMovingRight() {
 
 bool GameEngine::HasFinishedMovingLeft() {
     for (size_t row = 0; row < num_tiles_per_side_; row++) {
-        for (size_t col = 1; col < num_tiles_per_side_; col++) {
-            if (tiles_[row][0].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+        for (size_t col = 0; col < num_tiles_per_side_ - 1; col++) {
+            if (tiles_[row][col].IsEmpty() && !tiles_[row][col + 1].IsEmpty()) {
                 return false;
             }
 
             //If tiles can still merge on this turn, tiles have not finished moving
-            if (CanMergeTileLeft(row, col - 1)) {
+            if (CanMergeTileLeft(row, col)) {
                 if (!tiles_[row][col].GetIsBlocked()) {
                     return false;
                 }
@@ -252,8 +254,8 @@ bool GameEngine::HasFinishedMovingLeft() {
 }
 
 bool GameEngine::HasFinishedMovingDown() {
-    for (size_t row = 1; row < num_tiles_per_side_; row++) {
-        for (size_t col = 0; col < num_tiles_per_side_; col++) {
+    for (size_t col = 0; col < num_tiles_per_side_; col++) {
+        for (size_t row = 1; row < num_tiles_per_side_; row++) {
             if (tiles_[num_tiles_per_side_ - 1][col].IsEmpty() && !tiles_[row][col].IsEmpty()) {
                 return false;
             }
