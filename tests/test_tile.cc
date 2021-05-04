@@ -7,6 +7,7 @@ using game_2048::Tile;
 TEST_CASE("Test tiles correctly") {
     Tile tile(0, ci::Color("white"));
     Tile tile_2(2, ci::Color("white"));
+
     SECTION("Check initialized tile is empty") {
         REQUIRE(tile.IsEmpty());
         REQUIRE(!tile_2.IsEmpty());

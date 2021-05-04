@@ -10,6 +10,7 @@ GameEngine::GameEngine(size_t num_tiles_per_side)
     : num_tiles_per_side_(num_tiles_per_side) {
     score_ = 0;
     current_direction_ = Direction::STILL;
+    game_state_ = ACTIVE;
 
     //Initialize board of tiles to empty tiles
     for (size_t i = 0; i < num_tiles_per_side_; i++) {
@@ -22,16 +23,16 @@ GameEngine::GameEngine(size_t num_tiles_per_side)
 
     //Initialize starter tiles
     Tile tile(2, "white");
-    Tile tile4(4, "white");
-    Tile tile8(8, "white");
     tiles_[0][2] = tile;
     tiles_[1][2] = tile;
-    tiles_[2][2] = tile4;
-    tiles_[3][2] = tile8;
 }
 
 const vector<vector<Tile>> &GameEngine::GetTiles() {
     return tiles_;
+}
+
+const GameEngine::GameState &GameEngine::GetGameState() {
+    return game_state_;
 }
 
 const size_t GameEngine::GetScore() {
@@ -43,9 +44,15 @@ void GameEngine::SetCurrentDirection(const Direction& direction) {
 }
 
 void GameEngine::MoveTiles() {
+
+    //Do nothing if all possible tile movements in given direction are already done
+    if (CheckFinishMoving()) {
+        current_direction_ = Direction::STILL;
+        return;
+    }
+
+    //Moves tiles in given direction
     switch (current_direction_) {
-        case Direction::STILL:
-            return;
         case Direction::UP:
             MoveTilesUp();
             break;
@@ -65,6 +72,8 @@ void GameEngine::MoveTiles() {
         default:
             return;
     }
+    //If tiles finished moving in given direction, frees already merged tiles and randomly adds new tile to board
+    EndMovement();
 }
 
 
@@ -76,10 +85,9 @@ void GameEngine::MoveTilesUp() {
                 //Moves tile below to current tile position and sets tile below position to an empty tile
                 tiles_[row][col] = tiles_[row + 1][col];
                 tiles_[row + 1][col] = kEmptyTile;
-            }
 
-            //If the given tile can merge with the tile below and has not already been merged in this turn already
-            if (CanMergeTileUp(row, col) && !tiles_[row][col].GetIsBlocked()) {
+                //If the given tile can merge with the tile below and has not already been merged in this turn already
+            } else if (CanMergeTileUp(row, col) && !tiles_[row][col].GetIsBlocked()) {
                 MergeTiles(row, col);
 
                 //Sets block to true so tile cannot be merged again on this turn of movement
@@ -98,8 +106,7 @@ void GameEngine::MoveTilesRight() {
                 tiles_[row][col] = tiles_[row][col - 1];
                 tiles_[row][col - 1] = kEmptyTile;
 
-            }
-            if (CanMergeTileRight(row, col) && !tiles_[row][col].GetIsBlocked()) {
+            } else if (CanMergeTileRight(row, col) && !tiles_[row][col].GetIsBlocked()) {
                 MergeTiles(row, col);
                 tiles_[row][col].SetIsBlocked(true);
             }
@@ -116,8 +123,7 @@ void GameEngine::MoveTilesLeft() {
                 tiles_[row][col] = tiles_[row][col + 1];
                 tiles_[row][col + 1] = kEmptyTile;
 
-            }
-            if (CanMergeTileLeft(row, col) && !tiles_[row][col].GetIsBlocked()) {
+            } else if (CanMergeTileLeft(row, col) && !tiles_[row][col].GetIsBlocked()) {
                 MergeTiles(row, col);
                 tiles_[row][col].SetIsBlocked(true);
             }
@@ -133,9 +139,8 @@ void GameEngine::MoveTilesDown() {
                 //Moves tile above to current tile position and sets tile above to an empty tile
                 tiles_[row][col] = tiles_[row - 1][col];
                 tiles_[row - 1][col] = kEmptyTile;
-            }
 
-            if (CanMergeTileDown(row, col) && !tiles_[row][col].GetIsBlocked()) {
+            } else if (CanMergeTileDown(row, col) && !tiles_[row][col].GetIsBlocked()) {
                 MergeTiles(row, col);
                 tiles_[row][col].SetIsBlocked(true);
             }
@@ -147,35 +152,28 @@ void GameEngine::MoveTilesDown() {
 bool GameEngine::CanMergeTileUp(size_t row, size_t col) {
 
     //Checks if given tile position is not empty and the tile below is the same number
-    return (!tiles_[row][col].IsEmpty() && (tiles_[row + 1][col].GetNumber() == tiles_[row][col].GetNumber()));
+    return ((!tiles_[row][col].IsEmpty() && !tiles_[row + 1][col].GetIsBlocked())
+        && (tiles_[row + 1][col].GetNumber() == tiles_[row][col].GetNumber()));
 }
 
 bool GameEngine::CanMergeTileRight(size_t row, size_t col) {
-    return (!tiles_[row][col].IsEmpty() && (tiles_[row][col - 1].GetNumber() == tiles_[row][col].GetNumber()));
+    return ((!tiles_[row][col].IsEmpty() && !tiles_[row][col - 1].GetIsBlocked())
+        && (tiles_[row][col - 1].GetNumber() == tiles_[row][col].GetNumber()));
 }
 
 bool GameEngine::CanMergeTileLeft(size_t row, size_t col) {
-    return (!tiles_[row][col].IsEmpty() && (tiles_[row][col + 1].GetNumber() == tiles_[row][col].GetNumber()));
+    return ((!tiles_[row][col].IsEmpty() && !tiles_[row][col + 1].GetIsBlocked())
+        && (tiles_[row][col + 1].GetNumber() == tiles_[row][col].GetNumber()));
 }
 
 bool GameEngine::CanMergeTileDown(size_t row, size_t col) {
-    return (!tiles_[row][col].IsEmpty() && (tiles_[row - 1][col].GetNumber() == tiles_[row][col].GetNumber()));
+    return ((!tiles_[row][col].IsEmpty() && !tiles_[row - 1][col].GetIsBlocked())
+    && (tiles_[row - 1][col].GetNumber() == tiles_[row][col].GetNumber()));
 }
 
 void GameEngine::MergeTiles(size_t row, size_t col) {
-    size_t merged_number = 2 * tiles_[row][col].GetNumber();
-    ci::Color color;
-    auto it = kTileColors.find(merged_number);
-    if (it != kTileColors.end()) {
-        color = it->second;
+    Tile combined_tile = MakeMergedTile(row, col);
 
-    } else {
-        color = ci::Color8u(14, 14, 0);
-    }
-
-    Tile combined_tile(merged_number, color);
-    score_ += merged_number;
-    
     //Sets tile at given row and column to new merged tile and sets corresponding touching tile to empty
     if (current_direction_ == Direction::UP) {
         tiles_[row][col] = combined_tile;
@@ -195,6 +193,27 @@ void GameEngine::MergeTiles(size_t row, size_t col) {
     }
 }
 
+Tile GameEngine::MakeMergedTile(size_t row, size_t col) {
+    size_t merged_number = 2 * tiles_[row][col].GetNumber();
+    score_ += merged_number;
+    if (merged_number == 2048) {
+        game_state_ = WON;
+    }
+
+    //Gets corresponding color for new merged tile from map of each number with its given color
+    ci::Color color;
+    auto it = kTileColors.find(merged_number);
+    if (it != kTileColors.end()) {
+        color = it->second;
+
+    } else {
+        //If number not in map, color it black
+        color = ci::Color8u(14, 14, 0);
+    }
+    //Creates and returns new tile object with new merged tile number and color
+    Tile combined_tile(merged_number, color);
+    return combined_tile;
+}
 
 bool GameEngine::HasFinishedMovingUp() {
     for (size_t col = 0; col < num_tiles_per_side_; col++) {
@@ -244,7 +263,7 @@ bool GameEngine::HasFinishedMovingLeft() {
 
             //If tiles can still merge on this turn, tiles have not finished moving
             if (CanMergeTileLeft(row, col)) {
-                if (!tiles_[row][col].GetIsBlocked()) {
+                if (!tiles_[row][col].GetIsBlocked() && !tiles_[row][col + 1].GetIsBlocked()) {
                     return false;
                 }
             }
@@ -256,12 +275,12 @@ bool GameEngine::HasFinishedMovingLeft() {
 bool GameEngine::HasFinishedMovingDown() {
     for (size_t col = 0; col < num_tiles_per_side_; col++) {
         for (size_t row = 1; row < num_tiles_per_side_; row++) {
-            if (tiles_[num_tiles_per_side_ - 1][col].IsEmpty() && !tiles_[row][col].IsEmpty()) {
+            if (tiles_[row][col].IsEmpty() && !tiles_[row - 1][col].IsEmpty()) {
                 return false;
             }
             //If tiles can still merge on this turn, tiles have not finished moving
-            if (CanMergeTileUp(row - 1, col)) {
-                if (!tiles_[row][col].GetIsBlocked()) {
+            if (CanMergeTileDown(row, col)) {
+                if (!tiles_[row][col].GetIsBlocked() && !tiles_[row - 1][col].GetIsBlocked()) {
                     return false;
                 }
             }
@@ -271,11 +290,12 @@ bool GameEngine::HasFinishedMovingDown() {
 }
 
 void GameEngine::EndMovement() {
-    if ((current_direction_ == Direction::UP && HasFinishedMovingUp())
-        || (current_direction_ == Direction::LEFT && HasFinishedMovingLeft())
-        || (current_direction_ == Direction::RIGHT && HasFinishedMovingRight())
-        || (current_direction_ == Direction::DOWN && HasFinishedMovingDown())) {
+    if (CheckFinishMoving()) {
         current_direction_ = Direction::STILL;
+
+        if (game_state_ == WON || game_state_ == LOST) {
+            return;
+        }
 
         //Add new tile if tiles have finished moving
         FreeTilesForNextMove();
@@ -297,8 +317,6 @@ void GameEngine::AddNewTile() {
     tiles_[row][col] = new_tile;
 }
 
-
-
 void GameEngine::FreeTilesForNextMove() {
 
     //Sets is_blocked to false for all tiles so they can merge with other tiles
@@ -309,5 +327,11 @@ void GameEngine::FreeTilesForNextMove() {
     }
 }
 
+bool GameEngine::CheckFinishMoving() {
+    return (current_direction_ == Direction::UP && HasFinishedMovingUp())
+    || (current_direction_ == Direction::LEFT && HasFinishedMovingLeft())
+    || (current_direction_ == Direction::RIGHT && HasFinishedMovingRight())
+    || (current_direction_ == Direction::DOWN && HasFinishedMovingDown());
+}
 
 }

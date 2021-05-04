@@ -22,9 +22,15 @@ public:
      */
     GameEngine(size_t num_tiles_per_side);
 
+    enum GameState {
+        ACTIVE, LOST, WON
+    };
+
     const vector<vector<Tile>>& GetTiles();
     const size_t GetScore();
+    const GameState& GetGameState();
     void SetCurrentDirection(const Direction& direction);
+
 
     /**
      * Moves tiles in given direction.
@@ -35,6 +41,8 @@ public:
      * If tiles have finished moving in current direction, sets direction to still and generates a new tile.
      */
     void EndMovement();
+
+
 
 private:
     //2d vector representing board of tiles
@@ -64,6 +72,8 @@ private:
             {4096, ci::Color8u(93, 187, 99)}
     };
 
+    //bool is_done_up;
+    GameState game_state_;
 
     /**
      * Methods to move and merge all tiles in corresponding directions.
@@ -100,6 +110,8 @@ private:
      */
     void MergeTiles(size_t row, size_t col);
 
+    Tile MakeMergedTile(size_t row, size_t col);
+
     /**
      * Sets state of all tiles to unblocked so they can merge with tiles in next movement.
      */
@@ -109,6 +121,8 @@ private:
      * Randomly generates and adds new tile.
      */
     void AddNewTile();
+
+    bool CheckFinishMoving();
 };
 
 }

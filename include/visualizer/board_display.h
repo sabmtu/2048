@@ -9,6 +9,12 @@ using std::vector;
 
 class BoardDisplay {
 public:
+    /**
+     * Constructor initializes board of tiles display.
+     * @param top_left_corner 2d vector representing position of top left of board
+     * @param num_tiles_per_side size_t representing number of tiles per side of the square board
+     * @param board_size double representing length of board in screen pixels size
+     */
     BoardDisplay(const glm::vec2& top_left_corner, size_t num_tiles_per_side,
                  double board_size);
 
@@ -25,7 +31,10 @@ public:
 
 
 private:
+    //Margin that separates tiles from other tiles and edge of board
     const double kTileMargin = 5;
+    const size_t kStartTileNumBound = 8;
+    const ci::Font kTileFont = ci::Font("Times New roman", 40);
 
     //Details and size of tiles and board
     glm::vec2 top_left_corner_;

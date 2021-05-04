@@ -18,17 +18,6 @@ size_t Tile::GetNumber() const {
     return number_;
 }
 
-bool Tile::operator==(const Tile &tile) const {
-    if (number_ != tile.GetNumber() || color_ != tile.GetColor()) {
-        return false;
-    }
-    return true;
-}
-
-bool Tile::IsEmpty() const{
-    return number_ == 0;
-}
-
 void Tile::SetIsBlocked(bool set) {
     is_blocked_ = set;
 }
@@ -37,5 +26,14 @@ bool Tile::GetIsBlocked() const {
     return is_blocked_;
 }
 
+bool Tile::IsEmpty() const{
+    return number_ == 0;
+}
 
+bool Tile::operator==(const Tile &tile) const {
+    if (number_ != tile.GetNumber() || color_ != tile.GetColor()) {
+        return false;
+    }
+    return true;
+}
 }
