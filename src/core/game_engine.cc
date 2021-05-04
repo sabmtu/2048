@@ -22,7 +22,7 @@ GameEngine::GameEngine(size_t num_tiles_per_side)
     }
 
     //Initialize starter tiles
-    Tile tile(2, "white");
+    Tile tile(1024, "white");
     tiles_[0][2] = tile;
     tiles_[1][2] = tile;
 }
@@ -44,9 +44,10 @@ void GameEngine::SetCurrentDirection(const Direction& direction) {
 }
 
 void GameEngine::MoveTiles() {
+    CheckFinishMoving();
 
     //Do nothing if all possible tile movements in given direction are already done
-    if (CheckFinishMoving()) {
+    if (HasFinishedMovingInDirection()) {
         current_direction_ = Direction::STILL;
         return;
     }
@@ -196,6 +197,8 @@ void GameEngine::MergeTiles(size_t row, size_t col) {
 Tile GameEngine::MakeMergedTile(size_t row, size_t col) {
     size_t merged_number = 2 * tiles_[row][col].GetNumber();
     score_ += merged_number;
+
+    //Check if new tile merged will cause player to win
     if (merged_number == 2048) {
         game_state_ = WON;
     }
@@ -290,7 +293,12 @@ bool GameEngine::HasFinishedMovingDown() {
 }
 
 void GameEngine::EndMovement() {
-    if (CheckFinishMoving()) {
+    CheckFinishMoving();
+    if (is_done_moving_up_ && is_done_moving_right_ && is_done_moving_left_ && is_done_moving_down_) {
+        game_state_ = LOST;
+    }
+
+    if (HasFinishedMovingInDirection()) {
         current_direction_ = Direction::STILL;
 
         if (game_state_ == WON || game_state_ == LOST) {
@@ -325,13 +333,26 @@ void GameEngine::FreeTilesForNextMove() {
             tiles_[row][col].SetIsBlocked(false);
         }
     }
+    is_done_moving_up_ = false;
+    is_done_moving_left_ = false;
+    is_done_moving_right_ = false;
+    is_done_moving_down_ = false;
 }
 
-bool GameEngine::CheckFinishMoving() {
-    return (current_direction_ == Direction::UP && HasFinishedMovingUp())
-    || (current_direction_ == Direction::LEFT && HasFinishedMovingLeft())
-    || (current_direction_ == Direction::RIGHT && HasFinishedMovingRight())
-    || (current_direction_ == Direction::DOWN && HasFinishedMovingDown());
+void GameEngine::CheckFinishMoving() {
+
+    //Set bool values for if possible moves in one turn have finished in each direction
+    is_done_moving_up_ = HasFinishedMovingUp();
+    is_done_moving_down_ = HasFinishedMovingDown();
+    is_done_moving_left_ = HasFinishedMovingLeft();
+    is_done_moving_right_ = HasFinishedMovingRight();
+}
+
+bool GameEngine::HasFinishedMovingInDirection() {
+    return ((current_direction_ == Direction::UP && is_done_moving_up_)
+            || (current_direction_ == Direction::LEFT && is_done_moving_left_)
+            || (current_direction_ == Direction::RIGHT && is_done_moving_right_)
+            || (current_direction_ == Direction::DOWN && is_done_moving_down_));
 }
 
 }

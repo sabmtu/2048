@@ -72,7 +72,11 @@ private:
             {4096, ci::Color8u(93, 187, 99)}
     };
 
-    //bool is_done_up;
+    bool is_done_moving_up_;
+    bool is_done_moving_right_;
+    bool is_done_moving_left_;
+    bool is_done_moving_down_;
+
     GameState game_state_;
 
     /**
@@ -122,7 +126,8 @@ private:
      */
     void AddNewTile();
 
-    bool CheckFinishMoving();
+    void CheckFinishMoving();
+    bool HasFinishedMovingInDirection();
 };
 
 }

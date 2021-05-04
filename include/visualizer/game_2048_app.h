@@ -3,6 +3,7 @@
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "board_display.h"
+#include "win_loss_message.h"
 #include <core/game_engine.h>
 
 namespace game_2048 {
@@ -13,7 +14,7 @@ public:
     Game2048App();
 
     void draw() override;
-    //void update() override;
+    void update() override;
     void keyDown(ci::app::KeyEvent event) override;
 
     const double kWindowSize = 675;
@@ -23,7 +24,7 @@ public:
 private:
     GameEngine game_engine_;
     BoardDisplay board_display_;
-
+    WinLossMessage win_loss_message_;
 };
 
 }
