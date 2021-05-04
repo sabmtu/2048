@@ -13,11 +13,11 @@ void WinLossMessage::Draw() {
 
     //Creates and draws rectangle from given positions + margin to outline board
     ci::Rectf board_outline(top_left, bottom_right);
-    ci::gl::color(ci::Color("beige"));
+    ci::gl::color(ci::Color("white"));
     ci::gl::drawSolidRect(board_outline);
 
     ci::gl::drawStringCentered(game_end_message_,
-                               top_left_corner_ + glm::vec2(board_size_ / 2, board_size_ / 3),
+                               top_left_corner_ + glm::vec2(board_size_ / 2, board_size_ / 2.5),
                                "gray", ci::Font("Times New roman", 50));
 }
 

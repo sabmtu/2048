@@ -54,11 +54,17 @@ private:
 
     size_t score_;
 
+    //State of the game
+    GameState game_state_;
+
     //Empty tile
     const Tile kEmptyTile = Tile(0, "beige");
+    const Tile kStartTile2 = Tile(2, ci::Color8u(250, 250, 242));
+    const Tile kStartTile4 = Tile(4, ci::Color8u(255, 248, 232));
 
+    //Store for tiles of each number to be different colors
     const std::map<size_t, ci::Color> kTileColors = {
-            {2, ci::Color8u(232, 222, 209)},
+            {2, ci::Color8u(250, 250, 242)},
             {4, ci::Color8u(255, 248, 232)},
             {8, ci::Color8u(255, 186, 102)},
             {16, ci::Color8u(249, 155, 65)},
@@ -72,12 +78,12 @@ private:
             {4096, ci::Color8u(93, 187, 99)}
     };
 
+    //bool variables to store result of HasFinishedMoving in each direction
     bool is_done_moving_up_;
     bool is_done_moving_right_;
     bool is_done_moving_left_;
     bool is_done_moving_down_;
 
-    GameState game_state_;
 
     /**
      * Methods to move and merge all tiles in corresponding directions.

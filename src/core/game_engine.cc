@@ -2,9 +2,7 @@
 
 namespace game_2048 {
 
-GameEngine::GameEngine() {
-
-}
+GameEngine::GameEngine() { }
 
 GameEngine::GameEngine(size_t num_tiles_per_side)
     : num_tiles_per_side_(num_tiles_per_side) {
@@ -22,9 +20,8 @@ GameEngine::GameEngine(size_t num_tiles_per_side)
     }
 
     //Initialize starter tiles
-    Tile tile(1024, "white");
-    tiles_[0][2] = tile;
-    tiles_[1][2] = tile;
+    AddNewTile();
+    AddNewTile();
 }
 
 const vector<vector<Tile>> &GameEngine::GetTiles() {
@@ -294,20 +291,19 @@ bool GameEngine::HasFinishedMovingDown() {
 
 void GameEngine::EndMovement() {
     CheckFinishMoving();
-    if (is_done_moving_up_ && is_done_moving_right_ && is_done_moving_left_ && is_done_moving_down_) {
-        game_state_ = LOST;
-    }
 
     if (HasFinishedMovingInDirection()) {
         current_direction_ = Direction::STILL;
 
-        if (game_state_ == WON || game_state_ == LOST) {
-            return;
-        }
-
         //Add new tile if tiles have finished moving
         FreeTilesForNextMove();
         AddNewTile();
+
+        CheckFinishMoving();
+        if ((is_done_moving_up_ && is_done_moving_right_) && (is_done_moving_left_ && is_done_moving_down_)) {
+            game_state_ = LOST;
+            return;
+        }
     }
 }
 
@@ -321,7 +317,16 @@ void GameEngine::AddNewTile() {
         col = rand() % num_tiles_per_side_;
     } while (!tiles_[row][col].IsEmpty());
 
-    Tile new_tile(2, "white");
+    //Randomly generate number between 1 and 10 for 1/10 chance new tile is number 4, otherwise new tile is number 2
+    size_t num = rand() % 10 + 1;
+    Tile new_tile;
+    if (num == 1) {
+        new_tile = kStartTile4;
+
+    } else {
+        new_tile = kStartTile2;
+    }
+
     tiles_[row][col] = new_tile;
 }
 
@@ -333,6 +338,7 @@ void GameEngine::FreeTilesForNextMove() {
             tiles_[row][col].SetIsBlocked(false);
         }
     }
+    //Resets so board is free to move for next movement
     is_done_moving_up_ = false;
     is_done_moving_left_ = false;
     is_done_moving_right_ = false;
@@ -349,6 +355,8 @@ void GameEngine::CheckFinishMoving() {
 }
 
 bool GameEngine::HasFinishedMovingInDirection() {
+
+    //Checks if tiles have finished moving in corresponding given direction
     return ((current_direction_ == Direction::UP && is_done_moving_up_)
             || (current_direction_ == Direction::LEFT && is_done_moving_left_)
             || (current_direction_ == Direction::RIGHT && is_done_moving_right_)

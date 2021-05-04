@@ -20,11 +20,16 @@ public:
     const double kWindowSize = 675;
     const double kMargin = 150;
     const size_t kBoardDimension = 4;
+    const double kSmallerMargin = 0.25 * kMargin;
 
 private:
     GameEngine game_engine_;
     BoardDisplay board_display_;
     WinLossMessage win_loss_message_;
+    const ci::Color kOutlineColor = ci::Color("gray");
+
+    void DrawTitles();
+    void DrawScore();
 };
 
 }
