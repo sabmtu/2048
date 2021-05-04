@@ -12,7 +12,6 @@ BoardDisplay::BoardDisplay(const glm::vec2& top_left_corner, size_t num_tiles_pe
                            tile_side_length_(size / num_tiles_per_side_), board_size_(size) {
 }
 
-
 void BoardDisplay::Draw() {
     glm::vec2 top_left = top_left_corner_ - glm::vec2(kTileMargin, kTileMargin);
     glm::vec2 bottom_right = top_left_corner_ + glm::vec2(board_size_ + kTileMargin, board_size_ + kTileMargin);
