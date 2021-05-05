@@ -168,8 +168,99 @@ TEST_CASE("Add New Tiles Correctly Bigger Board") {
         REQUIRE(empty_tiles == 13);
         REQUIRE(num_nonempty_tiles == 3);
     }
+}
+
+TEST_CASE("Check adding tiles conditions") {
+    vector<vector<Tile>> tiles;
+    for (size_t row = 0; row < 2; row++) {
+        vector<Tile> cols;
+        for (size_t col = 0; col < 2; col++) {
+            Tile tile(0, "beige");
+            cols.push_back(tile);
+        }
+        tiles.push_back(cols);
+    }
+    Tile tile2(2, "white");
+
+    SECTION("Check will not add tiles if finished moving up") {
+        tiles[0][0] = tile2;
+        tiles[0][1] = tile2;
+        GameEngine game(tiles);
+
+        //Check tiles won't move since already moved to top and won't add new tiles
+        game.SetCurrentDirection(game_2048::Direction::UP);
+        game.MoveTiles();
+        game.MoveTiles();
+
+        REQUIRE(game.GetTiles()[0][0].GetNumber() == 2);
+        REQUIRE(game.GetTiles()[0][1].GetNumber() == 2);
+        REQUIRE(game.GetTiles()[1][0].GetNumber() == 0);
+        REQUIRE(game.GetTiles()[1][1].GetNumber() == 0);
+    }
+
+    SECTION("Check will not add tiles if finished moving down") {
+        tiles[1][0] = tile2;
+        tiles[1][1] = tile2;
+        GameEngine game(tiles);
+
+        game.SetCurrentDirection(game_2048::Direction::DOWN);
+        game.MoveTiles();
+        game.MoveTiles();
+
+        REQUIRE(game.GetTiles()[0][0].GetNumber() == 0);
+        REQUIRE(game.GetTiles()[0][1].GetNumber() == 0);
+        REQUIRE(game.GetTiles()[1][0].GetNumber() == 2);
+        REQUIRE(game.GetTiles()[1][1].GetNumber() == 2);
+    }
+
+    SECTION("Check will not add tiles if finished moving left") {
+        tiles[0][0] = tile2;
+        tiles[1][0] = tile2;
+        GameEngine game(tiles);
+
+        game.SetCurrentDirection(game_2048::Direction::LEFT);
+        game.MoveTiles();
+        game.MoveTiles();
+
+        REQUIRE(game.GetTiles()[0][0].GetNumber() == 2);
+        REQUIRE(game.GetTiles()[0][1].GetNumber() == 0);
+        REQUIRE(game.GetTiles()[1][0].GetNumber() == 2);
+        REQUIRE(game.GetTiles()[1][1].GetNumber() == 0);
+    }
+
+    SECTION("Check will not add tiles if finished moving right") {
+        tiles[0][1] = tile2;
+        tiles[1][1] = tile2;
+        GameEngine game(tiles);
+
+        game.SetCurrentDirection(game_2048::Direction::RIGHT);
+        game.MoveTiles();
+        game.MoveTiles();
+
+        REQUIRE(game.GetTiles()[0][0].GetNumber() == 0);
+        REQUIRE(game.GetTiles()[0][1].GetNumber() == 2);
+        REQUIRE(game.GetTiles()[1][0].GetNumber() == 0);
+        REQUIRE(game.GetTiles()[1][1].GetNumber() == 2);
+    }
+}
+
+TEST_CASE("Merge in different directions") {
+    vector<vector<Tile>> tiles;
+    for (size_t row = 0; row < 4; row++) {
+        vector<Tile> cols;
+        for (size_t col = 0; col < 4; col++) {
+            Tile tile(0, "beige");
+            cols.push_back(tile);
+        }
+        tiles.push_back(cols);
+    }
+    Tile tile2(2, "white");
 
     SECTION("Merge tiles Down correctly") {
+        tiles[3][0] = tile2;
+        tiles[2][1] = tile2;
+        GameEngine game(tiles);
+
         game.SetCurrentDirection(game_2048::Direction::LEFT);
         game.MoveTiles();
         game.SetCurrentDirection(game_2048::Direction::DOWN);
@@ -194,19 +285,6 @@ TEST_CASE("Add New Tiles Correctly Bigger Board") {
         REQUIRE(empty_tiles == 13);
         REQUIRE(num_nonempty_tiles == 3);
     }
-}
-
-TEST_CASE("Merge in other directions") {
-    vector<vector<Tile>> tiles;
-    for (size_t row = 0; row < 4; row++) {
-        vector<Tile> cols;
-        for (size_t col = 0; col < 4; col++) {
-            Tile tile(0, "beige");
-            cols.push_back(tile);
-        }
-        tiles.push_back(cols);
-    }
-    Tile tile2(2, "white");
 
     SECTION("Merge Tiles Up") {
         tiles[0][0] = tile2;
@@ -421,24 +499,45 @@ TEST_CASE("Merge Tiles Twice Bigger Board") {
     }
 
     SECTION("Check will not merge up if has already been merged in one move") {
+        tiles[0][2] = tile8;
+        tiles[1][2] = tile4;
+        tiles[2][2] = tile2;
+        tiles[3][2] = tile2;
+        GameEngine game(tiles);
+
+        game.SetCurrentDirection(game_2048::Direction::UP);
+        game.MoveTiles();
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[0][2].GetNumber() == 8);
+        REQUIRE(game.GetTiles()[1][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
+
+        //Check calling MoveTiles again won't merge the 4's since one of the 4's was just merged in one turn
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[0][2].GetNumber() == 8);
+        REQUIRE(game.GetTiles()[1][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
+    }
+
+    SECTION("Check will not merge down if has already been merged in one move") {
         tiles[0][2] = tile2;
         tiles[1][2] = tile2;
         tiles[2][2] = tile4;
         tiles[3][2] = tile8;
         GameEngine game(tiles);
 
-        game.SetCurrentDirection(game_2048::Direction::RIGHT);
+        game.SetCurrentDirection(game_2048::Direction::DOWN);
         game.MoveTiles();
         game.MoveTiles();
-        REQUIRE(game.GetTiles()[2][1].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[1][2].GetNumber() == 4);
         REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
-        REQUIRE(game.GetTiles()[2][3].GetNumber() == 8);
+        REQUIRE(game.GetTiles()[3][2].GetNumber() == 8);
 
         //Check calling MoveTiles again won't merge the 4's since one of the 4's was just merged in one turn
         game.MoveTiles();
-        REQUIRE(game.GetTiles()[2][1].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[1][2].GetNumber() == 4);
         REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
-        REQUIRE(game.GetTiles()[2][3].GetNumber() == 8);
+        REQUIRE(game.GetTiles()[3][2].GetNumber() == 8);
     }
 
 }
