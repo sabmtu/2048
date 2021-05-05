@@ -22,18 +22,25 @@ public:
      */
     GameEngine(size_t num_tiles_per_side);
 
+    /**
+     * Constructor initializing tiles and game information based on given 2d vector.
+     * @param tiles 2d vector of Tiles representing board of tiles
+     */
     GameEngine(const vector<vector<Tile>>& tiles);
 
+    /**
+     * GameState representing state of game.
+     */
     enum GameState {
         ACTIVE, LOST, WON
     };
 
+    //Getters and setters
     const vector<vector<Tile>>& GetTiles();
     const size_t GetNumTilesPerSide();
     const size_t GetScore();
     const GameState& GetGameState();
     void SetCurrentDirection(const Direction& direction);
-
 
     /**
      * Moves tiles in given direction.
@@ -44,8 +51,6 @@ public:
      * If tiles have finished moving in current direction, sets direction to still and generates a new tile.
      */
     void EndMovement();
-
-
 
 private:
     //2d vector representing board of tiles
@@ -123,6 +128,12 @@ private:
      */
     void MergeTiles(size_t row, size_t col);
 
+    /**
+     * Creates and returns new merged tile at given row and column.
+     * @param row size_t representing row of board
+     * @param col size_t representing column of board
+     * @return Tile object of new merged tile
+     */
     Tile MakeMergedTile(size_t row, size_t col);
 
     /**
@@ -135,7 +146,15 @@ private:
      */
     void AddNewTile();
 
+    /**
+     * Check if tiles have finished moving in every direction and sets bool values.
+     */
     void CheckFinishMoving();
+
+    /**
+     * Checks if tiles have finished moving in direction based on what current direction is.
+     * @return bool representing whether or not tiles finished moving in current direction
+     */
     bool HasFinishedMovingInDirection();
 };
 

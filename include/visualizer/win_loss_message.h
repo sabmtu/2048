@@ -28,7 +28,6 @@ public:
      * @param state GameState representing the current game engine's state of the game
      */
     void FindStateOfGame(GameEngine::GameState state);
-    //void keyDown(ci::app::KeyEvent event) override;
 
 private:
     //The message that appears when player wins or loses

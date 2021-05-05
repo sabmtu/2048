@@ -30,12 +30,4 @@ void WinLossMessage::FindStateOfGame(GameEngine::GameState state) {
     }
 }
 
-/*
-void WinLossMessage::keyDown(ci::app::KeyEvent event) {
-    switch (event.getCode()) {
-
-    }
-}*/
-
-
 }
