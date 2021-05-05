@@ -11,12 +11,12 @@ GameEngine::GameEngine(size_t num_tiles_per_side)
     game_state_ = ACTIVE;
 
     //Initialize board of tiles to empty tiles
-    for (size_t i = 0; i < num_tiles_per_side_; i++) {
-        vector<Tile> test;
-        for (size_t j = 0; j < num_tiles_per_side_; j++) {
-            test.push_back(kEmptyTile);
+    for (size_t row = 0; row < num_tiles_per_side_; row++) {
+        vector<Tile> cols;
+        for (size_t col = 0; col < num_tiles_per_side_; col++) {
+            cols.push_back(kEmptyTile);
         }
-        tiles_.push_back(test);
+        tiles_.push_back(cols);
     }
 
     //Initialize starter tiles
@@ -24,8 +24,19 @@ GameEngine::GameEngine(size_t num_tiles_per_side)
     AddNewTile();
 }
 
+GameEngine::GameEngine(const vector<vector<Tile>> &tiles) {
+    game_state_ = ACTIVE;
+    score_ = 0;
+    num_tiles_per_side_ = tiles.size();
+    tiles_ = tiles;
+}
+
 const vector<vector<Tile>> &GameEngine::GetTiles() {
     return tiles_;
+}
+
+const size_t GameEngine::GetNumTilesPerSide() {
+    return num_tiles_per_side_;
 }
 
 const GameEngine::GameState &GameEngine::GetGameState() {

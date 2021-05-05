@@ -22,11 +22,14 @@ public:
      */
     GameEngine(size_t num_tiles_per_side);
 
+    GameEngine(const vector<vector<Tile>>& tiles);
+
     enum GameState {
         ACTIVE, LOST, WON
     };
 
     const vector<vector<Tile>>& GetTiles();
+    const size_t GetNumTilesPerSide();
     const size_t GetScore();
     const GameState& GetGameState();
     void SetCurrentDirection(const Direction& direction);
