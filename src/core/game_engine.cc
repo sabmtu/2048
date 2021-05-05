@@ -301,8 +301,9 @@ bool GameEngine::HasFinishedMovingDown() {
 }
 
 void GameEngine::EndMovement() {
-    CheckFinishMoving();
 
+    //Checks if tiles have finished moving in current direction
+    CheckFinishMoving();
     if (HasFinishedMovingInDirection()) {
         current_direction_ = Direction::STILL;
 

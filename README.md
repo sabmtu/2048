@@ -10,8 +10,7 @@ number tiles to reach 2048.
 [2]: https://github.com/catchorg/Catch2
 
 ### Game
-![Image of game]
-()
+![Image of game](game_picture.png)
 ##### How to Play
 Numbered tiles will continue to appear as you move them. Use the arrow keys to move the tiles
 in the corresponding directions. Two tiles with the same number will merge into one tile with the
