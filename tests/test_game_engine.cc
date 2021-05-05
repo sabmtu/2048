@@ -117,7 +117,7 @@ TEST_CASE("Move Tiles") {
     }
 }
 
-TEST_CASE("Move and Merge Tiles Bigger Board") {
+TEST_CASE("Add New Tiles Correctly Bigger Board") {
     vector<vector<Tile>> tiles;
     for (size_t row = 0; row < 4; row++) {
         vector<Tile> cols;
@@ -206,9 +206,9 @@ TEST_CASE("Merge in other directions") {
         }
         tiles.push_back(cols);
     }
+    Tile tile2(2, "white");
 
     SECTION("Merge Tiles Up") {
-        Tile tile2(2, "white");
         tiles[0][0] = tile2;
         tiles[1][0] = tile2;
         GameEngine game_1(tiles);
@@ -234,7 +234,6 @@ TEST_CASE("Merge in other directions") {
     }
 
     SECTION("Merge Tiles Left") {
-        Tile tile2(2, "white");
         tiles[2][0] = tile2;
         tiles[2][2] = tile2;
         GameEngine game_2(tiles);
@@ -261,7 +260,6 @@ TEST_CASE("Merge in other directions") {
     }
 
     SECTION("Merge Tiles Right") {
-        Tile tile2(2, "white");
         tiles[1][2] = tile2;
         tiles[1][1] = tile2;
         GameEngine game_3(tiles);
@@ -286,6 +284,163 @@ TEST_CASE("Merge in other directions") {
         REQUIRE(empty_tiles == 14);
         REQUIRE(num_nonempty_tiles == 2);
     }
+}
+
+TEST_CASE("Merge Tiles Twice Bigger Board") {
+    vector<vector<Tile>> tiles;
+
+    //Initialize 4x4 board of empty tiles
+    for (size_t row = 0; row < 4; row++) {
+        vector<Tile> cols;
+        for (size_t col = 0; col < 4; col++) {
+            Tile tile(0, "beige");
+            cols.push_back(tile);
+        }
+        tiles.push_back(cols);
+    }
+    Tile tile2(2, "white");
+    Tile tile4(4, "white");
+    Tile tile8(8, "white");
+
+    SECTION("Check will not merge same tile right twice") {
+        tiles[2][0] = tile2;
+        tiles[2][1] = tile2;
+        tiles[2][2] = tile2;
+        tiles[2][3] = tile2;
+        GameEngine game(tiles);
+
+        game.SetCurrentDirection(game_2048::Direction::RIGHT);
+        game.MoveTiles();
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][3].GetNumber() == 4);
+
+        //Check calling MoveTiles again won't move tiles since they have already been merged
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][3].GetNumber() == 4);
+    }
+
+    SECTION("Check will not merge same tile left twice") {
+        tiles[2][0] = tile2;
+        tiles[2][1] = tile2;
+        tiles[2][2] = tile2;
+        tiles[2][3] = tile2;
+        GameEngine game(tiles);
+
+        game.SetCurrentDirection(game_2048::Direction::LEFT);
+        game.MoveTiles();
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[2][0].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][1].GetNumber() == 4);
+
+        //Check calling MoveTiles again won't move tiles since they have already been merged
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[2][0].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][1].GetNumber() == 4);
+    }
+
+    SECTION("Check will not merge same tile up twice") {
+        tiles[0][2] = tile2;
+        tiles[1][2] = tile2;
+        tiles[2][2] = tile2;
+        tiles[3][2] = tile2;
+        GameEngine game(tiles);
+
+        game.SetCurrentDirection(game_2048::Direction::UP);
+        game.MoveTiles();
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[0][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[1][2].GetNumber() == 4);
+
+        //Check calling MoveTiles again won't move tiles since they have already been merged
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[0][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[1][2].GetNumber() == 4);
+    }
+
+    SECTION("Check will not merge same tile down twice") {
+        tiles[0][2] = tile2;
+        tiles[1][2] = tile2;
+        tiles[2][2] = tile2;
+        tiles[3][2] = tile2;
+        GameEngine game(tiles);
+
+        game.SetCurrentDirection(game_2048::Direction::DOWN);
+        game.MoveTiles();
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[3][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
+
+        //Check calling MoveTiles again won't move tiles since they have already been merged
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[3][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
+    }
+
+    SECTION("Check will not merge right if has already been merged in one move") {
+        tiles[2][0] = tile2;
+        tiles[2][1] = tile2;
+        tiles[2][2] = tile4;
+        tiles[2][3] = tile8;
+        GameEngine game(tiles);
+
+        game.SetCurrentDirection(game_2048::Direction::RIGHT);
+        game.MoveTiles();
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[2][1].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][3].GetNumber() == 8);
+
+        //Check calling MoveTiles again won't merge the 4's since one of the 4's was just merged in one turn
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[2][1].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][3].GetNumber() == 8);
+    }
+
+    SECTION("Check will not merge left if has already been merged in one move") {
+        tiles[2][0] = tile2;
+        tiles[2][1] = tile2;
+        tiles[2][2] = tile4;
+        tiles[2][3] = tile8;
+        GameEngine game(tiles);
+
+        game.SetCurrentDirection(game_2048::Direction::LEFT);
+        game.MoveTiles();
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[2][0].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][1].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 8);
+
+        //Check calling MoveTiles again won't merge the 4's since one of the 4's was just merged in one turn
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[2][0].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][1].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 8);
+    }
+
+    SECTION("Check will not merge up if has already been merged in one move") {
+        tiles[0][2] = tile2;
+        tiles[1][2] = tile2;
+        tiles[2][2] = tile4;
+        tiles[3][2] = tile8;
+        GameEngine game(tiles);
+
+        game.SetCurrentDirection(game_2048::Direction::RIGHT);
+        game.MoveTiles();
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[2][1].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][3].GetNumber() == 8);
+
+        //Check calling MoveTiles again won't merge the 4's since one of the 4's was just merged in one turn
+        game.MoveTiles();
+        REQUIRE(game.GetTiles()[2][1].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][2].GetNumber() == 4);
+        REQUIRE(game.GetTiles()[2][3].GetNumber() == 8);
+    }
+
 }
 
 TEST_CASE("Check win and lose") {
