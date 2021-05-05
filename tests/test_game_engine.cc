@@ -362,6 +362,41 @@ TEST_CASE("Merge in different directions") {
         REQUIRE(empty_tiles == 14);
         REQUIRE(num_nonempty_tiles == 2);
     }
+
+    SECTION("Check merging adds to score") {
+        tiles[3][0] = tile2;
+        tiles[2][0] = tile2;
+        GameEngine game(tiles);
+
+        REQUIRE(game.GetScore() == 0);
+
+        game.SetCurrentDirection(game_2048::Direction::DOWN);
+        game.MoveTiles();
+        game.MoveTiles();
+
+        REQUIRE(game.GetTiles()[3][0].GetNumber() == 4);
+        REQUIRE(game.GetScore() == 4);
+    }
+
+    SECTION("Check score from merging multiple bigger numbers") {
+        Tile tile4(4, "white");
+        Tile tile8(8, "orange");
+        tiles[2][0] = tile4;
+        tiles[2][1] = tile4;
+        tiles[3][0] = tile8;
+        tiles[3][1] = tile8;
+        GameEngine game(tiles);
+
+        REQUIRE(game.GetScore() == 0);
+
+        game.SetCurrentDirection(game_2048::Direction::LEFT);
+        game.MoveTiles();
+        game.MoveTiles();
+
+        REQUIRE(game.GetTiles()[2][0].GetNumber() == 8);
+        REQUIRE(game.GetTiles()[3][0].GetNumber() == 16);
+        REQUIRE(game.GetScore() == 24);
+    }
 }
 
 TEST_CASE("Merge Tiles Twice Bigger Board") {
